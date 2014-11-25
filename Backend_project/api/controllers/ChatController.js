@@ -8,7 +8,7 @@
 module.exports = {
 
     send:function(){
-
+sails.socket
     },
     userIsTyping:function(){
 
