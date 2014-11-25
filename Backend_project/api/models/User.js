@@ -18,6 +18,11 @@ module.exports = {
        collection:'room',
           via:'users'
 
+      },
+      contents:{
+          collection:'content',
+          via:'uploadedBy'
+
       }
 
 

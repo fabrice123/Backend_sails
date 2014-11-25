@@ -8,6 +8,37 @@
 module.exports = {
 
   attributes: {
+      id:{
+          type: 'integer',
+          autoIncrement: true,
+          primaryKey:true
+      },
+
+      title:{
+          type:'string',
+          required:true
+      },
+      path:{
+          type:'string',
+          unique:true
+      },
+      uploadedBy:{
+          model:'user'
+      },
+      contentType:{
+          type:'string',
+          enum:['png','jpg','ytb']
+
+      },
+      loves:{
+          type:'integer',
+          defaultsTo:0
+
+      },
+      hates:{
+          type:'integer',
+          defaultsTo:0
+      }
 
   }
 };

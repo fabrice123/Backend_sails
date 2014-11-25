@@ -18,7 +18,11 @@ module.exports = {
           via:'rooms',
           dominant:true
 
+      },
+      CurrentContent:{
+              model: 'content'
       }
+
   }
 };
 
