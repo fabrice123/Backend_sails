@@ -4,21 +4,67 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/themes/blue-grey-theme.css">
+    <link rel="stylesheet" type="text/css" href="/styles/material-design-iconic-font/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic">
     <title></title>
 </head>
-<body ng-app>
+<body ng-app="app">
 
-<div style="background-color: #808080; margin-left: auto;margin-right: auto; width: 900px;">
-<%- body %>
-</div>
+    <div style="background-color: #808080; margin-left: auto;margin-right: auto; width: 900px;">
+    <%- body %>
+    </div>
 
-<script src="/js/dependencies/sails.io.js"></script>
-<script src="/bower_components/angular/angular.js"></script>
-<script src="/bower_components/angular-animate/angular-animate.js"></script>
-<script src="/bower_components/angular-aria/angular-aria.js"></script>
+    <script src="/js/dependencies/sails.io.js"></script>
 
-<script src="/bower_components/hammerjs/hammer.js"></script>
-<script src="/bower_components/angular-material/angular-material.js"></script>
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-aria/angular-aria.js"></script>
+    <script src="/bower_components/angular-animate/angular-animate.js"></script>
+    <script src="/bower_components/hammerjs/hammer.js"></script>
+    <script src="/bower_components/angular-material/angular-material.js"></script>
+    <script src="/bower_components/angular-sails/dist/angular-sails.min.js"></script>
+    <script>
+
+        var app = angular.module( 'app', [ 'ngMaterial' , 'ngSails' ] );
+
+        app.config(['$sailsProvider', function ($sailsProvider) {
+            $sailsProvider.url = '/';
+        }]);
+
+        app.controller("chatController",["$scope","$sails",function($scope,$sails){
+            var chatConstants = {
+                join:'chatJoinEvent',
+                send:'chatSendEvent',
+                userIsTyping:'chatUserIsTypingEvent',
+                leave:'chatLeaveEvent'
+            };
+            $scope.messages=[];
+            $scope.message="";
+            $scope.name="";
+            $scope.room="";
+
+
+            $scope.joinRoom=function(name,room){
+                $sails.post("/chat/join",{name:name,room:room});
+            }
+            $sails.on(chatConstants.join,function(joinMessage){
+                joinMessage.message=joinMessage.name+" has joined the room";
+                $scope.messages.push(joinMessage);
+            });
+            $sails.on(chatConstants.send,function(sendMessage){
+                $scope.messages.push(sendMessage);
+                $scope.message="";
+            });
+            $sails.on(chatConstants.leave,function(leaveMessage){
+                leaveMessage.message=leaveMessage.name+" has left the room";
+                $scope.messages.push(leaveMessage);
+            });
+            $sails.on(chatConstants.userIsTyping,function(typingMessage){
+
+            });
+        }]);
+
+
+    </script>
 </body>
 </html>
 

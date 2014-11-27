@@ -1,10 +1,37 @@
-<p>{{81/9}}</p>
-<md-content class="md-blue-theme">
-<section layout="row" layout-sm="column" layout-align="center center">
-
-<md-button class="md-fab" ng-disabled="true" aria-label="Comment">
-    <md-icon icon="/images/icons/2x_web/ic_3d_rotation_black_24dp.png" style="width: 24px; height: 24px;"></md-icon>
-</md-button>
-
-    </section>
-</md-content>
+<md-toolbar>
+    <div class="md-toolbar-tools">
+        <h3>
+            <span>My App Title</span>
+        </h3>
+    </div>
+</md-toolbar>
+<div ng-controller="chatController as chatCtrl">
+    <md-content md-theme="light-blue-dark">
+        <form style="padding: 20px;">
+            <div class="row">
+                <md-text-float label="Name" ng-model="name"></md-text-float>
+                <md-text-float label="Room" ng-model="room"></md-text-float>
+                <md-button class="md-fab md-primary" md-theme="cyan" aria-label="Join room" ng-click="joinRoom(name,room)">
+                    <i class="md-person-add"></i>
+                </md-button>
+            </div>
+        </form>
+    </md-content>
+    <md-content class="md-blue-theme">
+        <section>
+            <md-list layout="column">
+                <md-item ng-repeat="message in messages">
+                    <md-item-content>
+                        <div class="md-tile-left">
+                            <div ng-src="{{message.name}}" class="face"/>
+                        </div>
+                        <div class="md-tile-content">
+                            <h3>{{message.message}}</h3>
+                            <h4>{{message.name}}</h4>
+                        </div>
+                    </md-item-content>
+                </md-item>
+            </md-list>
+        </section>
+    </md-content>
+</div>
