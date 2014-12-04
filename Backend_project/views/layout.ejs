@@ -11,13 +11,14 @@
 </head>
 <body ng-app="app">
 
-    <div style="background-color: #808080; margin-left: auto;margin-right: auto; width: 900px;">
+    <div>
     <%- body %>
     </div>
 
     <script src="/js/dependencies/sails.io.js"></script>
 
     <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="/bower_components/angular-route/angular-route.js"></script>
     <script src="/bower_components/angular-aria/angular-aria.js"></script>
     <script src="/bower_components/angular-animate/angular-animate.js"></script>
@@ -51,7 +52,12 @@
         .controller('roomController',['$scope','$cookies','$routeParams','$sails',function($scope,$cookies,$routeParams,$sails){
             $scope.roomName=$routeParams.roomName;
             //TODO:set the roomName cookie and get the userName cookie
-            //TODO:login to the roomController
+
+
+
+                    //TODO:login to the roomController
+                    //dus room word doorgegeven via parameter
+
         }])
         .controller('chatController',['$scope','$cookies','$sails',function($scope,$cookies,$sails){
             //TODO:get the userName and roomName cookies to login to the ChatController
@@ -76,6 +82,9 @@
             (function joinRoom(){
                 $sails.post("/chat/join",{name:name,room:room});
             })();
+
+
+
 
             $scope.notifyUserIsTyping=function(){
                 if(!hasUserNotifiedTyping){
