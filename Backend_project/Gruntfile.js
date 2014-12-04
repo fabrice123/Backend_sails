@@ -14,6 +14,22 @@
 
 module.exports = function(grunt) {
 
+    grunt.initConfig({
+        mochaTest: {
+            test: {
+                options: {
+                    reporter: 'spec'
+                },
+                src: ['tests/**/*.spec.js']
+            }
+        }
+
+
+
+
+    });
+
+
 
 	// Load the include-all library in order to require all of our grunt
 	// configurations and task registrations dynamically.
@@ -78,4 +94,8 @@ module.exports = function(grunt) {
 	invokeConfigFn(taskConfigurations);
 	invokeConfigFn(registerDefinitions);
 
+    grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.registerTask('default', ['mochaTest']);
+
 };
+

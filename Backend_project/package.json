@@ -21,7 +21,8 @@
     "grunt-contrib-uglify": "~0.4.0",
     "grunt-contrib-cssmin": "~0.9.0",
     "grunt-contrib-less": "0.11.1",
-    "grunt-contrib-coffee": "~0.10.1"
+    "grunt-contrib-coffee": "~0.10.1",
+      "mocha": "1.4.28"
   },
   "scripts": {
     "start": "node app.js",
@@ -33,5 +34,11 @@
     "url": "git://github.com/anonymous node/sails user/Backend_project.git"
   },
   "author": "anonymous node/sails user",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "assert": "^1.1.2",
+    "grunt-mocha-test": "^0.12.4",
+    "mocha": "^2.0.1",
+    "sinon": "^1.12.1"
+  }
 }
