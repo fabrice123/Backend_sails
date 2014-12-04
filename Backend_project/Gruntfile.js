@@ -93,9 +93,9 @@ module.exports = function(grunt) {
 	// Run task functions to configure Grunt.
 	invokeConfigFn(taskConfigurations);
 	invokeConfigFn(registerDefinitions);
-
-    /*grunt.loadNpmTasks('grunt-mocha-test');
-    grunt.registerTask('default', ['mochaTest']);*/
-
+/*
+    grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.registerTask('default', ['mochaTest']);
+*/
 };
 

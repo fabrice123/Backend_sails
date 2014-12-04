@@ -18,7 +18,7 @@ module.exports = {
         socket.broadcast.to(joinrequest.room).emit(chatconstants.join,
             joinrequest);
 
-        sails.log.info(joinRequest);
+      //  sails.log.info(joinRequest);
     },
     send: function (req, resp) {
         var chatRequest = req.body,

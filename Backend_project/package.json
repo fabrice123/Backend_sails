@@ -33,7 +33,8 @@
     "type": "git",
     "url": "git://github.com/anonymous node/sails user/Backend_project.git"
   },
-  "author": "anonymous node/sails user",
+  "author": "Fabrice Stritzel & Niels Swimberghe",
+
   "license": "",
   "devDependencies": {
     "assert": "^1.1.2",
