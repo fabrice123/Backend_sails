@@ -6,6 +6,17 @@
  */
 
 module.exports = {
-	
+	join:function(req,res){
+        //TODO:addUserToRoom
+        //TODO:watch for the socket event that the user leaves and call removeUserFromRoom
+    },
+    leave:function(req,res){
+        //TODO:removeUserFromRoom
+    }
 };
+function addUserToRoom(room,user){
 
+}
+function removeUserFromRoom(room,user){
+
+}

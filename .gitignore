@@ -44,3 +44,9 @@ Temporary Items
 
 .idea/workspace.xml
 Backend_project/views/s.html
+workspace.xml
+Backend_project/data/db/local.0
+Backend_project/data/db/local.ns
+Backend_project/data/db/mongod.lock
+Backend_project/data/db/mediaChat-db.ns
+Backend_project/data/db/mediaChat-db.0

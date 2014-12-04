@@ -5,22 +5,109 @@
     <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/themes/blue-grey-theme.css">
 
+    <link rel="stylesheet" type="text/css" href="/styles/material-design-iconic-font/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic">
     <title></title>
 </head>
+<body ng-app="app">
 
-<body ng-app>
+    <div style="background-color: #808080; margin-left: auto;margin-right: auto; width: 900px;">
+    <%- body %>
+    </div>
 
-<div style="background-color: #808080; margin-left: auto;margin-right: auto; width: 900px;">
-<%- body %>
-</div>
+    <script src="/js/dependencies/sails.io.js"></script>
 
-<script src="/js/dependencies/sails.io.js"></script>
-<script src="/bower_components/angular/angular.js"></script>
-<script src="/bower_components/angular-animate/angular-animate.js"></script>
-<script src="/bower_components/angular-aria/angular-aria.js"></script>
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-route/angular-route.js"></script>
+    <script src="/bower_components/angular-aria/angular-aria.js"></script>
+    <script src="/bower_components/angular-animate/angular-animate.js"></script>
+    <script src="/bower_components/hammerjs/hammer.js"></script>
+    <script src="/bower_components/angular-material/angular-material.js"></script>
+    <script src="/bower_components/angular-sails/dist/angular-sails.min.js"></script>
+    <script>
+        //looks like the most supported file upload https://github.com/danialfarid/angular-file-upload
+        var app = angular.module( 'app', [ 'ngCookies','ngRoute', 'ngMaterial' , 'ngSails' ] );
 
-<script src="/bower_components/hammerjs/hammer.js"></script>
-<script src="/bower_components/angular-material/angular-material.js"></script>
+        app.config(['$routeProvider','$sailsProvider', function ($routeProvider,$sailsProvider) {
+            $routeProvider.when('/',{
+                        templateUrl:'partials/login.html',
+                        controller:'loginController'
+                    })
+                    .when('/room/:roomName',{
+                        templateUrl:'partials/room.html',
+                        controller:'roomController'
+                    })
+                    .otherwise({
+                        redirectTo:'/'
+                    });
+
+            $sailsProvider.url = '/';
+        }])
+        .controller('loginController',['$scope','$cookies',function($scope,$cookies){
+            //TODO:check if cookie for roomName and userName exists, if so, route to roomController
+            //TODO:set the userName cookie when set and route to the roomController with route
+            ///logging in is not the intention over here, the logging in happens in the roomController and chatController
+        }])
+        .controller('roomController',['$scope','$cookies','$routeParams','$sails',function($scope,$cookies,$routeParams,$sails){
+            $scope.roomName=$routeParams.roomName;
+            //TODO:set the roomName cookie and get the userName cookie
+            //TODO:login to the roomController
+        }])
+        .controller('chatController',['$scope','$cookies','$sails',function($scope,$cookies,$sails){
+            //TODO:get the userName and roomName cookies to login to the ChatController
+            var chatConstants = {
+                join:'chatJoinEvent',
+                send:'chatSendEvent',
+                userIsTyping:'chatUserIsTypingEvent',
+                leave:'chatLeaveEvent'
+                },
+                name="",
+                room="",
+                hasUserNotifiedTyping=false,
+                userIsTypingTime=3000;
+
+            $scope.messages=[];
+            $scope.message="";
+            $scope.name=name;
+            $scope.room=room;
+            $scope.userIsTypingMessage = null;
+
+
+            (function joinRoom(){
+                $sails.post("/chat/join",{name:name,room:room});
+            })();
+
+            $scope.notifyUserIsTyping=function(){
+                if(!hasUserNotifiedTyping){
+                    $sails.post("/chat/userIsTyping",{name:name,room:room});
+                    hasUserNotifiedTyping=true;
+                    setTimeout(
+                            function(){hasUserNotifiedTyping=false;},
+                            userIsTypingTime);
+                }
+            };
+            $sails.on(chatConstants.join,function(joinMessage){
+                joinMessage.message=joinMessage.name+" has joined the room";
+                $scope.messages.push(joinMessage);
+            });
+            $sails.on(chatConstants.send,function(sendMessage){
+                $scope.messages.push(sendMessage);
+                $scope.message="";
+            });
+            $sails.on(chatConstants.leave,function(leaveMessage){
+                leaveMessage.message=leaveMessage.name+" has left the room";
+                $scope.messages.push(leaveMessage);
+            });
+            $sails.on(chatConstants.userIsTyping,function(typingMessage){
+                $scope.userIsTypingMessage = typingMessage.name + ' is typing';
+                setTimeout(function(){
+                    $scope.userIsTypingMessage = null;
+                },userIsTypingTime);
+            });
+        }]);
+
+
+    </script>
 </body>
 </html>
 
