@@ -14,20 +14,20 @@
 
 module.exports = function(grunt) {
 
-    grunt.initConfig({
+    /*grunt.initConfig({
         mochaTest: {
             test: {
                 options: {
                     reporter: 'spec'
                 },
-                src: ['tests/**/*.spec.js']
+                src: ['tests/**//*.spec.js']
             }
         }
 
 
 
 
-    });
+    });*/
 
 
 
@@ -94,8 +94,8 @@ module.exports = function(grunt) {
 	invokeConfigFn(taskConfigurations);
 	invokeConfigFn(registerDefinitions);
 
-    grunt.loadNpmTasks('grunt-mocha-test');
-    grunt.registerTask('default', ['mochaTest']);
+    /*grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.registerTask('default', ['mochaTest']);*/
 
 };
 

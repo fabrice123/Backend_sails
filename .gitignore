@@ -26,7 +26,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -50,3 +51,4 @@ Backend_project/data/db/local.ns
 Backend_project/data/db/mongod.lock
 Backend_project/data/db/mediaChat-db.ns
 Backend_project/data/db/mediaChat-db.0
+*._0

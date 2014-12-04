@@ -1,0 +1,16 @@
+<div layout="row" layout-align="center" style="margin:15%;">
+    <md-content>
+        <md-card>
+            <form style="padding: 20px;">
+                <h2>Log in:</h2>
+                <div class="row">
+                    <md-text-float label="Username" ng-model="name"></md-text-float>
+                    <md-text-float label="Room" ng-model="room"></md-text-float>
+                    <md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="login(name,room)">
+                        <i class="md-person-add"></i>
+                    </md-button>
+                </div>
+            </form>
+        </md-card>
+    </md-content>
+</div>
