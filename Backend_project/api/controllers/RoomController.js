@@ -45,7 +45,7 @@ module.exports = {
             }
         });
 
-        removeUserFromRoom(joinRequest.room, joinRequest.userName,socket);
+        removeUserFromRoom(joinRequest.room, joinRequest.userName, socket);
 //sails.log.info(User);
         //TODO:watch for the socket event that the user leaves and call removeUserFromRoom
 
@@ -58,7 +58,7 @@ module.exports = {
             socket.leave(joinRequest.room);
 
         }
-        removeUserFromRoom(joinRequest.room, joinRequest.userName,socket);
+        removeUserFromRoom(joinRequest.room, joinRequest.userName, socket);
 //2 verschillen!!!! Models is voor database en de functie die je aanmaakt zoals join dit kan je direct aanspreken
 
     }

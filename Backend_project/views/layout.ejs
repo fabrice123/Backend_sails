@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/themes/blue-grey-theme.css">
-    <link rel="stylesheet" type="text/css" href="/styles/material-design-iconic-font/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="/styles/material-design-iconic-font/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic">
     <title></title>
 </head>
@@ -51,40 +52,42 @@
                 $scope.title = "Media Chat";
                 $scope.isLoggedIn = false;
             }])
-            .controller('loginController', ['$scope', '$cookies','$location', function ($scope, $cookies, $location) {
+            .controller('loginController', ['$scope', '$cookies', '$location', function ($scope, $cookies, $location) {
                 //check if cookie for roomName and userName exists, if so, route to roomController
-                if($cookies.userName&&$cookies.roomName){
-                    login($cookies.userName,$cookies.roomName);
+                if ($cookies.userName && $cookies.roomName) {
+                    login($cookies.userName, $cookies.roomName);
                 }
-                $scope.name=$cookies.userName;
-                $scope.room=$cookies.roomName;
+                $scope.name = $cookies.userName;
+                $scope.room = $cookies.roomName;
 
                 //set the userName cookie when set and route to the roomController with route
                 ///logging in is not the intention over here, the logging in happens in the roomController and chatController
-                function login(name,room){
-                    $cookies.userName=name;
-                    $location.path("/room/"+room);
+                function login(name, room) {
+                    $cookies.userName = name;
+                    $location.path("/room/" + room);
                 }
-                $scope.login=login;
+
+                $scope.login = login;
             }])
-            .controller('roomController', ['$scope', '$cookies', '$routeParams', '$sails', function ($scope, $cookies, $routeParams, $sails) {
+            .controller('roomController', ['$scope', '$cookies', '$routeParams', '$sails','$location', function ($scope, $cookies, $routeParams, $sails,$location) {
                 //set the roomName cookie and get the userName cookie
                 var roomConstants = {
-                    join: 'roomJoinEvent',
-                    leave: 'roomLeaveEvent'
-                    },
-                    name = $cookies.userName,
-                    room = $routeParams.roomName;
+                            join: 'roomJoinEvent',
+                            leave: 'roomLeaveEvent'
+                        },
+                        name = $cookies.userName,
+                        room = $routeParams.roomName;
                 $scope.roomName = room;
-                $scope.title = "Media Chat: "+room;
+                $scope.title = "Media Chat: " + room;
                 $scope.name = name;
                 $cookies.roomName = room;
+
 
                 //login to the roomController
                 (function joinRoom() {
                     $sails.post("/room/join", {name: name, room: room});
                 })();
-                $scope.leaveRoom=function(name,room){
+                $scope.leaveRoom = function (name, room) {
                     $sails.post("/room/leave", {name: name, room: room});
                 };
                 $sails.on(roomConstants.join, function (joinMessage) {
@@ -95,7 +98,7 @@
                 });
             }])
         //TODO:turn chatController into a 'chatRoom' directive
-            .controller('chatController', ['$scope', '$cookies','$routeParams', '$sails', function ($scope, $cookies, $sails) {
+            .controller('chatController', ['$scope', '$cookies', '$routeParams', '$sails', function ($scope, $cookies, $sails) {
                 //get the userName and roomName cookies to login to the ChatController
                 var chatConstants = {
                             join: 'chatJoinEvent',
