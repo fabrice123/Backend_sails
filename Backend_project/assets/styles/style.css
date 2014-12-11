@@ -1,0 +1,28 @@
+/*.arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+
+    border-top: 20px solid #f00;
+
+    bottom: 0px;
+    right: 40px;
+    top: 480px;
+}*/
+#messager{
+position: absolute;
+    -webkit-transform-origin: 100% 100%; /* Chrome, Safari, Opera */
+    max-resolution: 4px;
+    transform-origin: 100% 100%;
+
+}
+.md-send{
+    font-size: 25px;
+    position: absolute;
+
+    right: 75px;
+}
+.md-send:hover{
+    color:darkgrey;
+}

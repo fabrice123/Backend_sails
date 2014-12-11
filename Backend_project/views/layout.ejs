@@ -7,7 +7,9 @@
     <link rel="stylesheet" type="text/css"
           href="/styles/material-design-iconic-font/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic">
-    <title></title>
+    <link rel="stylesheet" type="text/css"
+          href="/styles/style.css">
+    <title>Chat app</title>
 </head>
 <body ng-app="app" ng-controller="rootController as rootCtrl">
     <div>
@@ -31,7 +33,10 @@
     <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="/bower_components/angular-sails/dist/angular-sails.min.js"></script>
     <script src="/bower_components/ng-file-upload/angular-file-upload.min.js"></script>
-    <script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/velocity/velocity.min.js"></script>
+    <script src="/bower_components/velocity/velocity.ui.min.js"></script>
+<script>
     //looks like the most supported file upload https://github.com/danialfarid/angular-file-upload
     var app = angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails', 'angularFileUpload']);
 
@@ -56,7 +61,7 @@
                 $scope.actions=[];
             }])
             .controller('loginController', ['$scope', '$cookies', '$location', function ($scope, $cookies, $location) {
-                $scope.actions=[];
+                $scope.actions.length=0;
 
                 //check if cookie for roomName and userName exists, if so, route to roomController
                 if ($cookies.userName && $cookies.roomName) {
@@ -74,7 +79,25 @@
 
                 $scope.login = login;
             }])
-            .controller('roomController', ['$scope', '$cookies','$cookieStore', '$routeParams', '$sails','$location','$mdDialog', function ($scope, $cookies,$cookieStore, $routeParams, $sails, $location,$mdDialog) {
+            .controller('roomController', ['$scope', '$cookies','$cookieStore', '$routeParams', '$sails', '$location','$mdDialog', '$timeout', function ($scope, $cookies,$cookieStore, $routeParams, $sails, $location,$mdDialog, $timeout) {
+                $scope.teller = 0;
+                $('#messager').velocity({opacity: 0}, 0);
+                $('#messager').velocity({scale: 0}, 0);
+                $scope.showhidemessenger = true;
+                $scope.messengeropenen = function () {
+                    if ($scope.teller == 0) {
+                        $('#messager').velocity({opacity: 1}, 200);
+                        $('#messager').velocity({scale: 1}, 400);
+                        $scope.teller += 1
+                    }
+                    else {
+                        $scope.teller = 0;
+                        $('#messager').velocity({scale: 0}, 400);
+                        $('#messager').velocity({opacity: 0}, 500);
+
+                    }
+                };
+
                 //set the roomName cookie and get the userName cookie
                 var roomConstants = {
                     join: 'roomJoinEvent',
@@ -156,8 +179,10 @@
                 }
             }])
         //TODO:turn chatController into a 'chatRoom' directive
-            .controller('chatController', ['$scope', '$cookies', '$routeParams', '$sails', function ($scope, $cookies,$routeParams, $sails) {
+            .controller('chatController', ['$scope', '$cookies', '$routeParams', '$sails', '$timeout', function ($scope, $cookies, $routeParams, $sails, $timeout) {
                 //get the userName and roomName cookies to login to the ChatController
+
+
                 var chatConstants = {
                             join: 'chatJoinEvent',
                             send: 'chatSendEvent',
@@ -167,13 +192,26 @@
                         userName = $cookies.userName,
                         roomName = $routeParams.roomName,
                         hasUserNotifiedTyping = false,
-                        userIsTypingTime = 3000;
+                        userIsTypingTime = 4000;
 
                 $scope.messages = [];
                 $scope.message = "";
                 $scope.userName = userName;
                 $scope.roomName = roomName;
                 $scope.userIsTypingMessage = null;
+                $scope.send = function (message) {
+                    var messageRequest = {userName: userName, roomName: roomName, message: message};
+                    $sails.post("/chat/send", messageRequest);
+                    $scope.messages.push(messageRequest);
+                    $scope.message = "";
+                };
+               $scope.enterevent=function(e,message){
+                 if(e.keyCode==13){
+                       $scope.send(message);
+                   }
+
+
+               };
 
 
                 (function joinRoom() {
@@ -204,8 +242,8 @@
                 });
                 $sails.on(chatConstants.userIsTyping, function (typingMessage) {
                     $scope.userIsTypingMessage = typingMessage.userName + ' is typing';
-                    setTimeout(function () {
-                        $scope.userIsTypingMessage = null;
+                    $timeout(function () {
+                        $scope.userIsTypingMessage = "";
                     }, userIsTypingTime);
                 });
             }]);

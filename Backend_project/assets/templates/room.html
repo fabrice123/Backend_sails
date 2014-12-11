@@ -3,28 +3,40 @@
 <form style="display: inline-block;">
     <md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="showUploadForm()">
         <i class="md-note-add" style="font-size: 30px; "></i>
-</md-button>
+    </md-button>
 </form>
 <div layout="row">
-<div style="border: dashed 1px red; position: fixed; height: 500px; top: 150px;">
-    <h2>GRAFIEKEN</h2>
-</div>
+    <div style="border: dashed 1px red; position: fixed; height: 500px; top: 150px;">
+        <h2>GRAFIEKEN</h2>
+    </div>
 
 
+    <div flex="60" style="height: 700px; margin-left: auto; margin-right: auto; background-color: #add8e6;">
+
+    </div>
+    <md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="messengeropenen()"
+               style="position: fixed; right: 20px; bottom: 50px;">
+        <i class="md-messenger" style="font-size: 30px; "></i>
+    </md-button>
+    <div ng-controller="chatController" style=" position: absolute;  height: 500px; width:300px; right: 65px;  bottom:100px;">
+
+        <md-card style="bottom: 0px;   background-color: whitesmoke; " id="messager">
+            <div style=" height: 480px; overflow-y:scroll; width:300px;  right: 0;">
+                <ul>
+                    <li ng-repeat="m in messages">
+                        {{m.message}}
+                    </li>
 
 
-
-<div flex="60" style="height: 700px; margin-left: auto; margin-right: auto; background-color: #add8e6;">
-
-</div>
-<md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="uploadfile()"style="position: fixed; right: 0;">
-    <i class="md-messenger" style="font-size: 30px; "></i>
-</md-button>
-<div style="border: dashed 1px red; position: fixed; height: 500px; width:200px;  right: 0; top: 150px;">
-    <h2>MESSENGER</h2>
-</div>
-
-
+                </ul>
+<div>{{userIsTypingMessage}}</div>
+            </div>
+            <div style="margin:4px; background-color: #f8f8ff;">
+            <input type="text" id="message" ng-model="message" ng-change="notifyUserIsTyping()" ng-keyup="enterevent($event,message)" />
+            <span class="md-send" ng-click="send(message)"></span>
+            </div>
+        </md-card>
+    </div>
 
 
 </div>

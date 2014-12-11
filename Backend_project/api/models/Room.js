@@ -20,7 +20,7 @@ module.exports = {
 
       },
       currentContent:{
-              model: 'content'
+          model: 'content'
       }
 
   }
