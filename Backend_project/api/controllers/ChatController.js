@@ -12,13 +12,13 @@ var chatConstants = {
 };
 module.exports = {
     join: function (req, resp) {
-        var joinrequest = req.body,
+        var joinRequest = req.body,
             socket = req.socket;
-        socket.join(joinrequest.room);
-        socket.broadcast.to(joinrequest.room).emit(chatconstants.join,
-            joinrequest);
+        socket.join(joinRequest.room);
+        socket.broadcast.to(joinRequest.room).emit(chatConstants.join,
+            joinRequest);
 
-      //  sails.log.info(joinRequest);
+        sails.log.info(joinRequest);
     },
     send: function (req, resp) {
         var chatRequest = req.body,

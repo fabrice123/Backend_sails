@@ -77,7 +77,7 @@ function removeUserFromRoom(roomName, userName, socket) {
     }
     User.findOne(userName).exec(function (err, user) {
 
-        if (user.rooms.length <= 1) {
+        if (user&&user.rooms.length <= 1) {
             User.destroy(userName).exec(function () {
             });
         }

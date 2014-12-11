@@ -7,7 +7,9 @@
     <link rel="stylesheet" type="text/css"
           href="/styles/material-design-iconic-font/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic">
-    <title></title>
+    <link rel="stylesheet" type="text/css"
+          href="/styles/style.css">
+    <title>Chat app</title>
 </head>
 <body ng-app="app" ng-controller="rootController as rootCtrl">
 <md-toolbar>
@@ -29,6 +31,9 @@
 <script src="/bower_components/angular-material/angular-material.js"></script>
 <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
 <script src="/bower_components/angular-sails/dist/angular-sails.min.js"></script>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/velocity/velocity.min.js"></script>
+<script src="/bower_components/velocity/velocity.ui.min.js"></script>
 <script>
     //looks like the most supported file upload https://github.com/danialfarid/angular-file-upload
     var app = angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails' ]);
@@ -69,7 +74,26 @@
 
                 $scope.login = login;
             }])
-            .controller('roomController', ['$scope', '$cookies', '$routeParams', '$sails','$location', function ($scope, $cookies, $routeParams, $sails,$location) {
+            .controller('roomController', ['$scope', '$cookies', '$routeParams', '$sails', '$location', '$timeout', function ($scope, $cookies, $routeParams, $sails, $location, $timeout) {
+                $scope.teller = 0;
+                $('#messager').velocity({opacity: 0}, 0);
+                $('#messager').velocity({scale: 0}, 0);
+                $scope.showhidemessenger = true;
+                $scope.messengeropenen = function () {
+                    if ($scope.teller == 0) {
+                        $('#messager').velocity({opacity: 1}, 200);
+                        $('#messager').velocity({scale: 1}, 400);
+                        $scope.teller += 1
+                    }
+                    else {
+                        $scope.teller = 0;
+                        $('#messager').velocity({scale: 0}, 400);
+                        $('#messager').velocity({opacity: 0}, 500);
+
+                    }
+                };
+
+
                 //set the roomName cookie and get the userName cookie
                 var roomConstants = {
                             join: 'roomJoinEvent',
@@ -98,8 +122,10 @@
                 });
             }])
         //TODO:turn chatController into a 'chatRoom' directive
-            .controller('chatController', ['$scope', '$cookies', '$routeParams', '$sails', function ($scope, $cookies, $sails) {
+            .controller('chatController', ['$scope', '$cookies', '$routeParams', '$sails', '$timeout', function ($scope, $cookies, $routeParams, $sails, $timeout) {
                 //get the userName and roomName cookies to login to the ChatController
+
+
                 var chatConstants = {
                             join: 'chatJoinEvent',
                             send: 'chatSendEvent',
@@ -109,13 +135,26 @@
                         name = $cookies.userName,
                         room = $routeParams.roomName,
                         hasUserNotifiedTyping = false,
-                        userIsTypingTime = 3000;
+                        userIsTypingTime = 4000;
 
                 $scope.messages = [];
                 $scope.message = "";
                 $scope.name = name;
                 $scope.room = room;
                 $scope.userIsTypingMessage = null;
+                $scope.send = function (message) {
+                    var messageRequest = {name: name, room: room, message: message};
+                    $sails.post("/chat/send", messageRequest);
+                    $scope.messages.push(messageRequest);
+                    $scope.message = "";
+                };
+               $scope.enterevent=function(e,message){
+                 if(e.keyCode==13){
+                       $scope.send(message);
+                   }
+
+
+               };
 
 
                 (function joinRoom() {
@@ -139,16 +178,16 @@
                 });
                 $sails.on(chatConstants.send, function (sendMessage) {
                     $scope.messages.push(sendMessage);
-                    $scope.message = "";
+
                 });
                 $sails.on(chatConstants.leave, function (leaveMessage) {
                     leaveMessage.message = leaveMessage.name + " has left the room";
                     $scope.messages.push(leaveMessage);
                 });
                 $sails.on(chatConstants.userIsTyping, function (typingMessage) {
-                    $scope.userIsTypingMessage = typingMessage.name + ' is typing';
-                    setTimeout(function () {
-                        $scope.userIsTypingMessage = null;
+                    $scope.userIsTypingMessage = typingMessage.name + ' is typing...';
+                    $timeout(function () {
+                        $scope.userIsTypingMessage = "";
                     }, userIsTypingTime);
                 });
             }]);
