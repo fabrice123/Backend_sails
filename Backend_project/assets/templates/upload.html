@@ -1,0 +1,13 @@
+<md-dialog aria-label="Mango (Fruit)">
+    <md-content>
+        <button ng-file-select
+                ng-model="files"
+                accept="image/*"
+                >Attach Any File</button>
+        <div ng-file-drop ng-model="files" class="drop-box"
+             drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}"
+             accept="image/*">
+            Drop Images files here
+        </div>
+    </md-content>
+</md-dialog>

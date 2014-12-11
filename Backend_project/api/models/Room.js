@@ -19,7 +19,7 @@ module.exports = {
           dominant:true
 
       },
-      CurrentContent:{
+      currentContent:{
               model: 'content'
       }
 

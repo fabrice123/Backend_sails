@@ -51,5 +51,7 @@ module.exports.routes = {
     'post /chat/userIsTyping': 'ChatController.userIsTyping',
     'post /chat/leave': 'ChatController.leave',
     'post /room/join': 'RoomController.join',
-    'post /room/leave': 'RoomController.leave'
+    'post /room/leave': 'RoomController.leave',
+    'post /room/changeContent': 'RoomController.changeContent',
+    'post /room/upload': 'RoomController.upload'
 };

@@ -12,34 +12,34 @@ var chatConstants = {
 };
 module.exports = {
     join: function (req, resp) {
-        var joinrequest = req.body,
+        var joinRequest = req.body,
             socket = req.socket;
-        socket.join(joinrequest.room);
-        socket.broadcast.to(joinrequest.room).emit(chatconstants.join,
-            joinrequest);
+        socket.join(joinRequest.roomName);
+        socket.broadcast.to(joinRequest.roomName).emit(chatConstants.join,
+            joinRequest);
 
       //  sails.log.info(joinRequest);
     },
     send: function (req, resp) {
         var chatRequest = req.body,
             socket = req.socket;
-        socket.broadcast.to(chatRequest.room).emit(chatConstants.send,
+        socket.broadcast.to(chatRequest.roomName).emit(chatConstants.send,
             chatRequest);
         sails.log.info(chatRequest);
     },
     userIsTyping: function (req, resp) {
         var typingRequest = req.body,
             socket = req.socket;
-        socket.broadcast.to(typingRequest.room).emit(chatConstants.userIsTyping,
+        socket.broadcast.to(typingRequest.roomName).emit(chatConstants.userIsTyping,
             typingRequest);
         sails.log.info(typingRequest);
     },
     leave: function (req, resp) {
         var leaveRequest = req.body,
             socket = req.socket;
-        socket.broadcast.to(leaveRequest.room).emit(chatConstants.leave,
+        socket.broadcast.to(leaveRequest.roomName).emit(chatConstants.leave,
             leaveRequest);
-        sails.sockets.leave(req.socket, leaveRequest.room);
+        sails.sockets.leave(req.socket, leaveRequest.roomName);
         sails.log.info(leaveRequest);
     }
 };
