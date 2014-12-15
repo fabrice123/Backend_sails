@@ -102,7 +102,7 @@ function removeUserFromRoom(roomName, userName, socket) {
             });
         }
     });
-    sails.log.info("User "+userName +" has lef room "+roomName);
+    sails.log.info("User "+userName +" has left room "+roomName);
 }
 function changeContent(roomName,fileId){
     Room.findOne(roomName).exec(function (err, room) {

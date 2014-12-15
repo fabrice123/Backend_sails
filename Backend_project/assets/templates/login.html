@@ -1,13 +1,13 @@
-<div layout="row" layout-align="center" style="margin:15%;">
+<div layout="row" layout-align="center center" class="fill-height">
     <md-content>
         <md-card>
-            <form style="padding: 20px;">
+            <form name="loginForm" style="padding: 10px;" novalidate>
                 <h2>Log in:</h2>
-                <div class="row">
-                    <md-text-float label="Username" ng-model="userName"></md-text-float>
-                    <md-text-float label="Room" ng-model="roomName"></md-text-float>
-                    <md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="login(userName,roomName)">
-                        <i class="md-person-add"></i>
+                <div class="column">
+                    <md-text-float label="Username" ng-model="userName" required></md-text-float>
+                    <md-text-float label="Room" ng-model="roomName" required></md-text-float>
+                    <md-button class="md-primary fill-width"  md-theme="cyan" aria-label="Login" ng-click="loginForm.$valid&&login(userName,roomName)">
+                        Log in
                     </md-button>
                 </div>
             </form>

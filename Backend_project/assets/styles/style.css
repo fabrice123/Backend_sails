@@ -10,18 +10,21 @@
     right: 40px;
     top: 480px;
 }*/
-#messager{
-position: absolute;
+.fill-width{
+    width:100%;
+}
+.fill-height{
+    height:100%
+}
+.fill-both{
+    width: 100%;
+    height: 100%;
+}
+#messenger {
+    position: absolute;
     -webkit-transform-origin: 100% 100%; /* Chrome, Safari, Opera */
     max-resolution: 4px;
     transform-origin: 100% 100%;
-
-}
-.md-send{
-    font-size: 25px;
-    position: absolute;
-
-    right: 75px;
 }
 .md-send:hover{
     color:darkgrey;
