@@ -184,7 +184,6 @@
                 $sails.post("/room/changeContent", {roomName: roomName, fileId: fileId});
             }
         }])
-        //TODO:turn chatController into a 'chatRoom' directive
         .controller('chatController', ['$scope', '$cookies', '$routeParams', '$sails', '$timeout', function ($scope, $cookies, $routeParams, $sails, $timeout) {
             //get the userName and roomName cookies to login to the ChatController
             var chatConstants = {
