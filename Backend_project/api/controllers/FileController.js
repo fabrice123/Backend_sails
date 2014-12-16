@@ -18,7 +18,7 @@ module.exports = {
         )
     },
     upload: function  (req, res) {
-        req.file('avatar').upload(function (err, files) {
+        req.file('file').upload(function (err, files) {
             if (err)
                 return res.serverError(err);
 

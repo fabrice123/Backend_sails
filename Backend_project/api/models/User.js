@@ -12,7 +12,7 @@ module.exports = {
      name:{
      type:'string',
         primaryKey:'true',
-     required:'true'
+        required:'true'
      },
       rooms:{
        collection:'room',

@@ -19,8 +19,8 @@ module.exports = {
           dominant:true
 
       },
-      CurrentContent:{
-              model: 'content'
+      currentContent:{
+          model: 'content'
       }
 
   }

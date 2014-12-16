@@ -3,14 +3,13 @@
 <head lang="en">
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/angular-material.css">
-    <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/themes/blue-grey-theme.css">
-    <link rel="stylesheet" type="text/css"
-          href="/styles/material-design-iconic-font/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css" href="/styles/material-design-iconic-font/css/material-design-iconic-font.css">
+    <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic">
-    <link rel="stylesheet" type="text/css"
-          href="/styles/style.css">
+    <link rel="stylesheet" type="text/css" href="/styles/style.css">
     <title>Chat app</title>
 </head>
+<<<<<<< HEAD
 <body ng-app="app" ng-controller="rootController as rootCtrl">
 <md-toolbar>
     <div>
@@ -202,6 +201,34 @@
 
 </script>
 </body>
+=======
+    <body ng-app="app" ng-controller="rootController as rootCtrl">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <span>{{title}}</span>
+                <span flex></span>
+                <!-- the rootController sets an actions array in the scope, store a function in the execute property, so it can be called on click here -->
+                <md-button ng-repeat="action in actions" ng-click="action.execute()">{{action.title}}<i ng-if="action.icon" class="{{action.icon}}"></i></md-button>
+            </div>
+        </md-toolbar>
+        <div ng-view>
+        </div>
+        <script src="/js/dependencies/sails.io.js"></script>
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/bower_components/angular-route/angular-route.js"></script>
+        <script src="/bower_components/angular-aria/angular-aria.js"></script>
+        <script src="/bower_components/angular-animate/angular-animate.js"></script>
+        <script src="/bower_components/hammerjs/hammer.js"></script>
+        <script src="/bower_components/angular-material/angular-material.js"></script>
+        <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
+        <script src="/bower_components/angular-sails/dist/angular-sails.min.js"></script>
+        <script src="/bower_components/ng-file-upload/angular-file-upload.min.js"></script>
+        <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="/bower_components/velocity/velocity.min.js"></script>
+        <script src="/bower_components/velocity/velocity.ui.min.js"></script>
+        <script src="/js/app.js"></script>
+    </body>
+>>>>>>> 6d0c74699ec5d62bc38bcdb8f08678e77ce3b75a
 </html>
 
 
