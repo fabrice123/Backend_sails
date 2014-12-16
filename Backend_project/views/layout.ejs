@@ -75,11 +75,13 @@
                 $scope.login = login;
             }])
             .controller('roomController', ['$scope', '$cookies', '$routeParams', '$sails', '$location', '$timeout', function ($scope, $cookies, $routeParams, $sails, $location, $timeout) {
+
                 $scope.teller = 0;
                 $('#messager').velocity({opacity: 0}, 0);
                 $('#messager').velocity({scale: 0}, 0);
                 $scope.showhidemessenger = true;
                 $scope.messengeropenen = function () {
+
                     if ($scope.teller == 0) {
                         $('#messager').velocity({opacity: 1}, 200);
                         $('#messager').velocity({scale: 1}, 400);
@@ -145,6 +147,7 @@
                 $scope.send = function (message) {
                     var messageRequest = {name: name, room: room, message: message};
                     $sails.post("/chat/send", messageRequest);
+
                     $scope.messages.push(messageRequest);
                     $scope.message = "";
                 };
@@ -163,6 +166,7 @@
 
                 $scope.notifyUserIsTyping = function () {
                     if (!hasUserNotifiedTyping) {
+
                         $sails.post("/chat/userIsTyping", {name: name, room: room});
                         hasUserNotifiedTyping = true;
                         setTimeout(
@@ -173,10 +177,12 @@
                     }
                 };
                 $sails.on(chatConstants.join, function (joinMessage) {
+
                     joinMessage.message = joinMessage.name + " has joined the room";
                     $scope.messages.push(joinMessage);
                 });
                 $sails.on(chatConstants.send, function (sendMessage) {
+
                     $scope.messages.push(sendMessage);
 
                 });
@@ -185,6 +191,7 @@
                     $scope.messages.push(leaveMessage);
                 });
                 $sails.on(chatConstants.userIsTyping, function (typingMessage) {
+
                     $scope.userIsTypingMessage = typingMessage.name + ' is typing...';
                     $timeout(function () {
                         $scope.userIsTypingMessage = "";

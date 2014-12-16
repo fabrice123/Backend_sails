@@ -22,14 +22,19 @@
 
         <md-card style="bottom: 0px;   background-color: whitesmoke; " id="messager">
             <div style=" height: 480px; overflow-y:scroll; width:300px;  right: 0;">
-                <ul>
-                    <li ng-repeat="m in messages">
-                        {{m.message}}
+                <ul style="padding:0px;">
+                    <li style="list-style-type: none; width:100%;"  ng-repeat="m in messages">
+
+                        <div style="display: inline-block;"> {{m.name}}</div>
+                        <md-card style="display: inline-block;">
+                       <div > {{m.message}}</div>
+                        </md-card>
+                        <div>{{datum}}</div>
                     </li>
 
 
                 </ul>
-<div>{{userIsTypingMessage}}</div>
+<div style="position:absolute; bottom: 45px; font-size: 12px; margin-left: 5px; opacity: 0.9;">{{userIsTypingMessage}}</div>
             </div>
             <div style="margin:4px; background-color: #f8f8ff;">
             <input type="text" id="message" ng-model="message" ng-change="notifyUserIsTyping()" ng-keyup="enterevent($event,message)" />
