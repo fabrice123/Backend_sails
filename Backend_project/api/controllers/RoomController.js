@@ -24,7 +24,8 @@ module.exports = {
 
         //removeUserFromRoom(joinRequest.roomName, joinRequest.userName, socket);
         //sails.log.info(User);
-        //TODO:watch for the socket event that the user leaves and call removeUserFromRoom
+        res.end();
+
 
     },
     leave: function (req, res) {

@@ -1,34 +1,26 @@
 <!DOCTYPE html>
 <html>
-<<<<<<< HEAD
+
 <head lang="en">
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/angular-material.css">
-    <link rel="stylesheet" type="text/css" href="/styles/material-design-iconic-font/css/material-design-iconic-font.css">
+    <link rel="stylesheet" type="text/css"
+          href="/styles/material-design-iconic-font/css/material-design-iconic-font.css">
     <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic">
     <link rel="stylesheet" type="text/css" href="/styles/style.css">
     <title>Chat app</title>
 </head>
 
-=======
-    <head lang="en">
-        <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/angular-material.css">
-        <link rel="stylesheet" type="text/css" href="/styles/material-design-iconic-font/css/material-design-iconic-font.css">
-        <link rel="stylesheet" type="text/css" href="/bower_components/angular-material/angular-material.css">
-        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic">
-        <link rel="stylesheet" type="text/css" href="/styles/style.css">
-        <title>Chat app</title>
-    </head>
->>>>>>> 4f04d018500ed7cee4d720f2fb87c66f34980777
     <body ng-app="app" ng-controller="rootController as rootCtrl">
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <span>{{title}}</span>
                 <span flex></span>
                 <!-- the rootController sets an actions array in the scope, store a function in the execute property, so it can be called on click here -->
-                <md-button ng-repeat="action in actions" ng-click="action.execute()">{{action.title}}<i ng-if="action.icon" class="{{action.icon}}"></i></md-button>
+                <md-button ng-repeat="action in actions" ng-click="action.execute()">{{action.title}}<i ng-if="action.icon"
+                                                                                                        class="{{action.icon}}"></i>
+                </md-button>
             </div>
         </md-toolbar>
         <div ng-view>
@@ -46,12 +38,10 @@
         <script src="/bower_components/jquery/dist/jquery.min.js"></script>
         <script src="/bower_components/velocity/velocity.min.js"></script>
         <script src="/bower_components/velocity/velocity.ui.min.js"></script>
+        <script  src="/bower_components/angular-youtube-mb/dist/angular-youtube-embed.min.js"></script>
         <script src="/js/app.js"></script>
     </body>
-<<<<<<< HEAD
 
-=======
->>>>>>> 4f04d018500ed7cee4d720f2fb87c66f34980777
 </html>
 
 

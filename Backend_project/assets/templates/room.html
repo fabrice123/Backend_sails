@@ -5,20 +5,24 @@
 
 
     <div flex="60" style="height: 700px; margin-left: auto; margin-right: auto; background-color: #add8e6;">
-
+<youtube-video video-url="'https://www.youtube.com/watch?v=KDBxaq4Iv9o'" player-width="'100%'" player-height="'100%'"></youtube-video>
     </div>
-<<<<<<< HEAD
 
-
-
-=======
->>>>>>> 4f04d018500ed7cee4d720f2fb87c66f34980777
 </div>
 
 <md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="showContentPicker()"
            style="position: fixed; left: 50px; bottom: 50px;">
     <i class="mdi-note-add mdi-2x"></i>
 </md-button>
+
+<div>
+    <ul>
+        <li ng-repeat="u in users">
+        {{u.name}}
+        </li>
+    </ul>
+</div>
+
 
 <md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="showMessenger()"
            style="position: fixed; right: 50px; bottom: 50px;">

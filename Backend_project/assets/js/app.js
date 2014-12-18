@@ -5,7 +5,7 @@
 (function(angular) {
     "use strict";
     //looks like the most supported file upload https://github.com/danialfarid/angular-file-upload
-    angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails', 'angularFileUpload'])
+    angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails', 'angularFileUpload','youtube-embed'])
         .config(['$routeProvider', '$sailsProvider', function ($routeProvider, $sailsProvider) {
             $routeProvider.when('/', {
                 templateUrl: 'templates/login.html',
@@ -46,8 +46,9 @@
 
             $scope.login = login;
         }])
-        .controller('roomController', ['$scope', '$cookies', '$cookieStore', '$routeParams', '$sails', '$location', '$mdDialog','$mdBottomSheet', function ($scope, $cookies, $cookieStore, $routeParams, $sails, $location, $mdDialog,$mdBottomSheet) {
+        .controller('roomController', ['$scope', '$cookies', '$cookieStore', '$routeParams', '$sails', '$location', '$mdDialog','$mdBottomSheet','$timeout', function ($scope, $cookies, $cookieStore, $routeParams, $sails, $location, $mdDialog,$mdBottomSheet,$timeout) {
             $scope.counter = 0;
+
             var messenger = $('#messenger');
             messenger.velocity({opacity: 0}, 0);
             messenger.velocity({scale: 0}, 0);
@@ -78,6 +79,7 @@
             $scope.$parent.title = "Media Chat: Room " + roomName;
             $scope.userName = userName;
             $scope.users = [];
+
             $cookies.roomName = roomName;
 
             $scope.actions.length = 0;
@@ -93,17 +95,26 @@
             (function joinRoom() {
                 $sails.post("/room/join", {userName: userName, roomName: roomName});
             })();
-            (function getRooms() {
-                $sails.get("/room/" + roomName + "/users", function (users) {
-                    $scope.users = users;
-                });
-            })();
+            function getUsers() {
+                return $sails.get("/room/" + roomName + "/users", function (users) {
+                    $timeout(function(){
+                        $scope.users = users;
+                    },500);
 
+                    console.log(users);
+
+                });
+            };
+            getUsers();
             $sails.on(roomConstants.join, function (joinMessage) {
                 console.log(joinMessage);
+
+                getUsers();
+
             });
             $sails.on(roomConstants.leave, function (leaveMessage) {
                 console.log(leaveMessage);
+                getUsers();
             });
             $sails.on(roomConstants.notifyContentChanged, function (notifyMessage) {
                 console.log(notifyMessage);
@@ -184,6 +195,33 @@
                 $sails.post("/room/changeContent", {roomName: roomName, fileId: fileId});
             }
         }])
+
+        .controller('youtubeFormController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
+            var roomName = $routeParams.roomName,
+                userName = $cookies.userName;
+            $scope.youtubeLink="";
+            function changeContent(fileId) {
+                $sails.post("/room/changeContent", {roomName: roomName, fileId: fileId});
+            }
+            $scope.insertYoutubeLink=function(){
+                console.log($scope.youtubeLink);
+                $sails.post("/content",{
+                    title: $scope.youtubeLink,
+                    path: $scope.youtubeLink,
+                    contentType:"ytb",
+                    uploadedBy:{
+                        name:userName
+                    }
+
+                }).then(function(data){
+                    changeContent(data.id);
+                })
+                $mdDialog.hide();
+            };
+
+
+        }])
+
         .controller('chatController', ['$scope', '$cookies', '$routeParams', '$sails', '$timeout', function ($scope, $cookies, $routeParams, $sails, $timeout) {
             //get the userName and roomName cookies to login to the ChatController
             var chatConstants = {
