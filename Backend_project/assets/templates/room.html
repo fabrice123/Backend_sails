@@ -7,9 +7,12 @@
     <div flex="60" style="height: 700px; margin-left: auto; margin-right: auto; background-color: #add8e6;">
 
     </div>
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 4f04d018500ed7cee4d720f2fb87c66f34980777
 </div>
 
 <md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="showContentPicker()"
@@ -25,12 +28,15 @@
 
     <md-card style="bottom:0px;background-color:#f5f5f5;" id="messenger">
         <div style=" height: 480px; overflow-y:scroll; width:300px;  right: 0;">
-            <ul>
-                <li ng-repeat="m in messages">
-                    {{m.message}}
+            <ul style="padding:0px;">
+                <li style="list-style-type: none; width:100%;" ng-repeat="m in messages">
+                    <md-card style="display: inline-block;background:#fff;">
+                        <div> {{m.message}}</div>
+                    </md-card>
+                    <div>{{date}}</div>
                 </li>
             </ul>
-            <div>{{userIsTypingMessage}}</div>
+            <div style="position:absolute; bottom: 45px; font-size: 12px; margin-left: 5px; opacity: 0.9;">{{userIsTypingMessage}}</div>
         </div>
         <div style="margin:4px; background-color: #f8f8ff;">
             <input type="text" id="message" ng-model="message" ng-change="notifyUserIsTyping()" ng-keyup="enterEvent($event,message)" style="width:258px;"/>
