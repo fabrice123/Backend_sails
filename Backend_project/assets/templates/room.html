@@ -7,37 +7,6 @@
     <div flex="60" style="height: 700px; margin-left: auto; margin-right: auto; background-color: #add8e6;">
 
     </div>
-<<<<<<< HEAD
-    <md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="messengeropenen()"
-               style="position: fixed; right: 20px; bottom: 50px;">
-        <i class="md-messenger" style="font-size: 30px; "></i>
-    </md-button>
-    <div ng-controller="chatController" style=" position: absolute;  height: 500px; width:300px; right: 65px;  bottom:100px;">
-
-        <md-card style="bottom: 0px;   background-color: whitesmoke; " id="messager">
-            <div style=" height: 480px; overflow-y:scroll; width:300px;  right: 0;">
-                <ul style="padding:0px;">
-                    <li style="list-style-type: none; width:100%;"  ng-repeat="m in messages">
-
-                        <div style="display: inline-block;"> {{m.name}}</div>
-                        <md-card style="display: inline-block;">
-                       <div > {{m.message}}</div>
-                        </md-card>
-                        <div>{{datum}}</div>
-                    </li>
-
-
-                </ul>
-<div style="position:absolute; bottom: 45px; font-size: 12px; margin-left: 5px; opacity: 0.9;">{{userIsTypingMessage}}</div>
-            </div>
-            <div style="margin:4px; background-color: #f8f8ff;">
-            <input type="text" id="message" ng-model="message" ng-change="notifyUserIsTyping()" ng-keyup="enterevent($event,message)" />
-            <span class="md-send" ng-click="send(message)"></span>
-            </div>
-        </md-card>
-    </div>
-=======
->>>>>>> 6d0c74699ec5d62bc38bcdb8f08678e77ce3b75a
 
 
 
