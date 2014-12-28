@@ -22,7 +22,6 @@ module.exports = {
       currentContent:{
           model: 'content'
       }
-
   }
 };
 
