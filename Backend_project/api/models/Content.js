@@ -25,7 +25,7 @@ module.exports = {
       },
       contentType:{
           type:'string',
-          enum:['image/png','image/jpeg','ytb','audio/mpeg']
+          enum:['image/png','image/jpeg','ytb','audio/mpeg','audio/mp3']
       },
       loves:{
           type:'integer',

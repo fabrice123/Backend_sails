@@ -35,11 +35,16 @@ module.exports = {
     },
     upload: function  (req, res) {
         var uploadRequest = req.body;
-        req.file('file').upload(function (err, files) {
+        req.file('file').upload({
+            dirname:"../public/uploads/"
+        },function (err, files) {
             sails.log.info(files);
             if(files&&files.length>0){
-                var file = files[0];
-                addContent(uploadRequest.title,file.filename,uploadRequest.userName,file.type,function(content){
+                var file = files[0],
+                    parts = file.fd.split('\\');
+                var path = parts[parts.length-1];
+                sails.log.info("path: "+path);
+                addContent(uploadRequest.title,"uploads/"+path,uploadRequest.userName,file.type,function(content){
                     sails.log.info(content);
                     return res.json(content);
                 });

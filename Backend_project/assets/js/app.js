@@ -116,15 +116,11 @@
             function getUsers() {
                 return $sails.get("/room/" + roomName + "/users", function (users) {
                     $timeout(function () {
-                        $scope.users = users;
                         console.log(users);
                         for (var i = 0; i < users.length; i++) {
-                            var user = users[i];
-                            user.first = user.name.substr(0, 1);
-                            console.log(user.first);
-                            user.color=randomcolor();
+                            addUser(users[i].name);
                         }
-                    }, 500);
+                    }, 0);
 
                     console.log(users);
                 });
@@ -154,13 +150,27 @@
 
             }
 
+            function addUser(userName) {
+                var user = {name:userName};
+                user.first = user.name.substr(0, 1);
+                user.color=randomcolor();
+                $scope.users.push(user);
+            };
+            function removeUser(userName) {
+                for(var i =0;i<$scope.users.length;i++){
+                    var user = $scope.users[i];
+                    if(user.name==userName) {
+                        $scope.users.splice(i,1);
+                    }
+                }
+            };
             $sails.on(roomConstants.join, function (joinMessage) {
                 console.log(joinMessage);
-                getUsers();
+                addUser(joinMessage.userName);
             });
             $sails.on(roomConstants.leave, function (leaveMessage) {
                 console.log(leaveMessage);
-                getUsers();
+                removeUser(leaveMessage.userName);
             });
             $sails.on(roomConstants.notifyContentChanged, function (notifyMessage) {
                 console.log(notifyMessage);
@@ -237,8 +247,8 @@
                 }
             };
 
-            function changeContent(fileId) {
-                $sails.post("/room/changeContent", {roomName: roomName, fileId: fileId});
+            function changeContent(contentId) {
+                $sails.post("/room/changeContent", {roomName: roomName, contentId: contentId});
             }
         }])
         .controller('uploadMusicFormController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
@@ -264,8 +274,8 @@
                 }
             };
 
-            function changeContent(fileId) {
-                $sails.post("/room/changeContent", {roomName: roomName, fileId: fileId});
+            function changeContent(contentId) {
+                $sails.post("/room/changeContent", {roomName: roomName, contentId: contentId});
             }
         }])
         .controller('youtubeFormController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
