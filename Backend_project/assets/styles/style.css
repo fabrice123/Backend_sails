@@ -29,4 +29,37 @@
 .md-send:hover{
     color:darkgrey;
 }
+.face {
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    width: 48px;
+    height: 48px;
 
+    margin-right: 20px;
+    margin-left: 10px;
+    margin-top: 10px;
+    -webkit-box-shadow: 3px 3px 12px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    3px 3px 12px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         3px 3px 12px 0px rgba(50, 50, 50, 0.75);
+ }
+#firstletter{
+    color: #ffffff;
+    font-family: 'FontAwesome', sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+text-align: center;
+    margin-top: 6px;
+}
+#lin1 .md-bar2
+{
+    background-color: red;
+}
+#lin2 .md-bar2{
+    background-color: green;
+}
+#tinderyes:hover,#tinderno:hover{
+    -ms-transform: scale(0.9); /* IE 9 */
+    -webkit-transform: scale(0.9); /* Chrome, Safari, Opera */
+    transform: scale(0.9);
+
+}

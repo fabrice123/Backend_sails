@@ -2,10 +2,10 @@
  * Created by Niels on 15/12/2014.
  */
 //self invoking to declare no global variables
-(function(angular) {
+(function (angular) {
     "use strict";
     //looks like the most supported file upload https://github.com/danialfarid/angular-file-upload
-    angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails', 'angularFileUpload','youtube-embed'])
+    angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails', 'angularFileUpload', 'youtube-embed'])
         .config(['$routeProvider', '$sailsProvider', function ($routeProvider, $sailsProvider) {
             $routeProvider.when('/', {
                 templateUrl: 'templates/login.html',
@@ -46,9 +46,22 @@
 
             $scope.login = login;
         }])
-        .controller('roomController', ['$scope', '$cookies', '$cookieStore', '$routeParams', '$sails', '$location', '$mdDialog','$mdBottomSheet','$timeout', function ($scope, $cookies, $cookieStore, $routeParams, $sails, $location, $mdDialog,$mdBottomSheet,$timeout) {
+        .controller('roomController', ['$scope', '$cookies', '$cookieStore', '$routeParams', '$sails', '$location', '$mdDialog', '$mdBottomSheet', '$timeout', function ($scope, $cookies, $cookieStore, $routeParams, $sails, $location, $mdDialog, $mdBottomSheet, $timeout) {
             $scope.counter = 0;
+            $scope.likes=0;
+            $scope.dislikes=0;
 
+
+            $scope.randomcolor = function () {
+
+                var letters = '0123456789ABCDEF'.split('');
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+
+            }
             var messenger = $('#messenger');
             messenger.velocity({opacity: 0}, 0);
             messenger.velocity({scale: 0}, 0);
@@ -97,15 +110,38 @@
             })();
             function getUsers() {
                 return $sails.get("/room/" + roomName + "/users", function (users) {
-                    $timeout(function(){
+                    $timeout(function () {
                         $scope.users = users;
-                    },500);
+                        for (var i = 0; i < $scope.users.length; ++i) {
+                            $scope.users[i].first = $scope.users[i].name.substr(0, 1);
+                            console.log($scope.users[i].first);
+                        }
+                    }, 500);
 
                     console.log(users);
+
 
                 });
             };
             getUsers();
+
+            //content moet hier
+            //$scope.content=content
+            /*$scope.content={};
+            $scope.content.loves=15;
+            $scope.content.hates=70;*/
+          /* $scope.average=$scope.content.loves+$scope.content.hates
+            $scope.likes= ($scope.content.loves/$scope.average)*100;
+            $scope.dislikes= ($scope.content.hates/$scope.average)*100;*/
+
+
+            $scope.tinderYes=function(){
+
+            };
+            $scope.tinderNo=function(){
+
+            };
+
             $sails.on(roomConstants.join, function (joinMessage) {
                 console.log(joinMessage);
 
@@ -119,29 +155,32 @@
             $sails.on(roomConstants.notifyContentChanged, function (notifyMessage) {
                 console.log(notifyMessage);
             });
-            $scope.showContentPicker = function(){
+            $scope.showContentPicker = function () {
                 $mdBottomSheet.show({
-                    templateUrl:'templates/content-picker.html',
-                    controller:'contentPickerController'
+                    templateUrl: 'templates/content-picker.html',
+                    controller: 'contentPickerController'
                 })
             };
         }])
-        .controller('contentPickerController',['$scope','$mdDialog','$mdBottomSheet',function($scope,$mdDialog,$mdBottomSheet){
-            $scope.contentItems=[{
-                action:showUploadForm,
-                icon:'mdi-insert-photo mdi-3x',
-                name:'Photo'
-            },{
-                action:showYoutubeForm,
-                icon:'mdi-video-collection mdi-3x',
-                name:'Youtube'
-            },
-            {
-                action: showMusicForm,
-                icon: 'mdi-my-library-music mdi-3x',
-                name: 'Music'
-            }];
-            $scope.pickContent=function(item){
+        .controller('contentPickerController', ['$scope', '$mdDialog', '$mdBottomSheet', function ($scope, $mdDialog, $mdBottomSheet) {
+            $scope.contentItems = [
+                {
+                    action: showUploadForm,
+                    icon: 'mdi-insert-photo mdi-3x',
+                    name: 'Photo'
+                },
+                {
+                    action: showYoutubeForm,
+                    icon: 'mdi-video-collection mdi-3x',
+                    name: 'Youtube'
+                },
+                {
+                    action: showMusicForm,
+                    icon: 'mdi-my-library-music mdi-3x',
+                    name: 'Music'
+                }
+            ];
+            $scope.pickContent = function (item) {
                 item.action();
                 $mdBottomSheet.hide();
             };
@@ -152,12 +191,14 @@
                     controller: 'uploadController'
                 });
             }
-            function showYoutubeForm(){
+
+            function showYoutubeForm() {
                 $mdDialog.show({
                     templateUrl: 'templates/youtubeForm.html',
                     controller: 'youtubeFormController'
                 });
             }
+
             function showMusicForm() {
                 $mdDialog.show({
                     templateUrl: 'templates/upload.html',
@@ -199,21 +240,22 @@
         .controller('youtubeFormController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
             var roomName = $routeParams.roomName,
                 userName = $cookies.userName;
-            $scope.youtubeLink="";
+            $scope.youtubeLink = "";
             function changeContent(fileId) {
                 $sails.post("/room/changeContent", {roomName: roomName, fileId: fileId});
             }
-            $scope.insertYoutubeLink=function(){
+
+            $scope.insertYoutubeLink = function () {
                 console.log($scope.youtubeLink);
-                $sails.post("/content",{
+                $sails.post("/content", {
                     title: $scope.youtubeLink,
                     path: $scope.youtubeLink,
-                    contentType:"ytb",
-                    uploadedBy:{
-                        name:userName
+                    contentType: "ytb",
+                    uploadedBy: {
+                        name: userName
                     }
 
-                }).then(function(data){
+                }).then(function (data) {
                     changeContent(data.id);
                 })
                 $mdDialog.hide();
