@@ -2,10 +2,10 @@
  * Created by Niels on 15/12/2014.
  */
 //self invoking to declare no global variables
-(function(angular) {
+(function (angular) {
     "use strict";
     //looks like the most supported file upload https://github.com/danialfarid/angular-file-upload
-    angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails', 'angularFileUpload','youtube-embed'])
+    angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails', 'angularFileUpload', 'youtube-embed'])
         .config(['$routeProvider', '$sailsProvider', function ($routeProvider, $sailsProvider) {
             $routeProvider.when('/', {
                 templateUrl: 'templates/login.html',
@@ -46,9 +46,22 @@
 
             $scope.login = login;
         }])
-        .controller('roomController', ['$scope', '$cookies', '$cookieStore', '$routeParams', '$sails', '$location', '$mdDialog','$mdBottomSheet','$timeout', function ($scope, $cookies, $cookieStore, $routeParams, $sails, $location, $mdDialog,$mdBottomSheet,$timeout) {
+        .controller('roomController', ['$scope', '$cookies', '$cookieStore', '$routeParams', '$sails', '$location', '$mdDialog', '$mdBottomSheet', '$timeout', function ($scope, $cookies, $cookieStore, $routeParams, $sails, $location, $mdDialog, $mdBottomSheet, $timeout) {
             $scope.counter = 0;
+            $scope.likes=0;
+            $scope.dislikes=0;
 
+
+            function randomcolor() {
+
+                var letters = '0123456789ABCDEF'.split('');
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+
+            };
             var messenger = $('#messenger');
             messenger.velocity({opacity: 0}, 0);
             messenger.velocity({scale: 0}, 0);
@@ -102,9 +115,17 @@
             })();
             function getUsers() {
                 return $sails.get("/room/" + roomName + "/users", function (users) {
-                    $timeout(function(){
+                    $timeout(function () {
                         $scope.users = users;
-                    },500);
+                        console.log(users);
+                        for (var i = 0; i < users.length; i++) {
+                            var user = users[i];
+                            user.first = user.name.substr(0, 1);
+                            console.log(user.first);
+                            user.color=randomcolor();
+                        }
+                    }, 500);
+
                     console.log(users);
                 });
             }
@@ -115,6 +136,24 @@
                 });
             }
             getContent();
+
+            //content moet hier
+            //$scope.content=content
+            /*$scope.content={};
+            $scope.content.loves=15;
+            $scope.content.hates=70;*/
+          /* $scope.average=$scope.content.loves+$scope.content.hates
+            $scope.likes= ($scope.content.loves/$scope.average)*100;
+            $scope.dislikes= ($scope.content.hates/$scope.average)*100;*/
+
+
+            $scope.tinderYes=function(){
+
+            }
+            $scope.tinderNo=function(){
+
+            }
+
             $sails.on(roomConstants.join, function (joinMessage) {
                 console.log(joinMessage);
                 getUsers();
@@ -127,10 +166,10 @@
                 console.log(notifyMessage);
                 getContent();
             });
-            $scope.showContentPicker = function(){
+            $scope.showContentPicker = function () {
                 $mdBottomSheet.show({
-                    templateUrl:'templates/content-picker.html',
-                    controller:'contentPickerController'
+                    templateUrl: 'templates/content-picker.html',
+                    controller: 'contentPickerController'
                 })
             };
         }])
@@ -160,12 +199,14 @@
                     controller: 'uploadPictureController'
                 });
             }
-            function showYoutubeForm(){
+
+            function showYoutubeForm() {
                 $mdDialog.show({
                     templateUrl: 'templates/youtubeForm.html',
                     controller: 'youtubeFormController'
                 });
             }
+
             function showMusicForm() {
                 $mdDialog.show({
                     templateUrl: 'templates/uploadMusicForm.html',
