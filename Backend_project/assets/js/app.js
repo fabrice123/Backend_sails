@@ -83,12 +83,17 @@
             $cookies.roomName = roomName;
 
             $scope.actions.length = 0;
-            $scope.actions.push({icon: "mdi-settings-power mdi-2x", execute: function () {
-                $sails.post("/room/leave", {userName: userName, roomName: roomName});
-                $cookieStore.remove('roomName');
-                $location.path("/");
-            }
-            });
+            $scope.actions.push(
+                {
+                    icon: "mdi-settings-power mdi-2x",
+                    title: userName,
+                    execute: function () {
+                        $sails.post("/room/leave", {userName: userName, roomName: roomName});
+                        $cookieStore.remove('roomName');
+                        $location.path("/");
+                    }
+                }
+            );
 
 
             //login to the roomController
@@ -100,17 +105,19 @@
                     $timeout(function(){
                         $scope.users = users;
                     },500);
-
                     console.log(users);
-
                 });
-            };
+            }
             getUsers();
+            function getContent(){
+                $sails.get("/room/"+roomName+"/currentContent",function(content){
+                    $scope.content=content;
+                });
+            }
+            getContent();
             $sails.on(roomConstants.join, function (joinMessage) {
                 console.log(joinMessage);
-
                 getUsers();
-
             });
             $sails.on(roomConstants.leave, function (leaveMessage) {
                 console.log(leaveMessage);
@@ -118,6 +125,7 @@
             });
             $sails.on(roomConstants.notifyContentChanged, function (notifyMessage) {
                 console.log(notifyMessage);
+                getContent();
             });
             $scope.showContentPicker = function(){
                 $mdBottomSheet.show({
@@ -128,7 +136,7 @@
         }])
         .controller('contentPickerController',['$scope','$mdDialog','$mdBottomSheet',function($scope,$mdDialog,$mdBottomSheet){
             $scope.contentItems=[{
-                action:showUploadForm,
+                action:showPictureForm,
                 icon:'mdi-insert-photo mdi-3x',
                 name:'Photo'
             },{
@@ -146,10 +154,10 @@
                 $mdBottomSheet.hide();
             };
 
-            function showUploadForm() {
+            function showPictureForm() {
                 $mdDialog.show({
-                    templateUrl: 'templates/upload.html',
-                    controller: 'uploadController'
+                    templateUrl: 'templates/uploadPictureForm.html',
+                    controller: 'uploadPictureController'
                 });
             }
             function showYoutubeForm(){
@@ -160,66 +168,84 @@
             }
             function showMusicForm() {
                 $mdDialog.show({
-                    templateUrl: 'templates/upload.html',
-                    controller: 'musicFormController'
+                    templateUrl: 'templates/uploadMusicForm.html',
+                    controller: 'uploadMusicFormController'
                 });
             }
         }])
-        .controller('uploadController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
+        .controller('uploadPictureController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
             var roomName = $routeParams.roomName,
                 userName = $cookies.userName;
 
-            $scope.$watch('files', function () {
-                if ($scope.files) {
-                    for (var i = 0; i < $scope.files.length; i++) {
-                        var file = $scope.files[i];
-                        $scope.upload = $upload.upload({
-                            url: '/room/upload', // upload.php script, node.js route, or servlet url
-                            method: 'POST',
-                            file: file,
-                            data: {userName: userName, roomName: roomName, title: 'test'}
+            $scope.uploadPicture = function (title, file) {
+                if(title&&file){
+                    $scope.upload = $upload.upload({
+                        url: '/room/upload',
+                        method: 'POST',
+                        file: file,
+                        data: {userName: userName, roomName: roomName, title: title}
 
-                        }).progress(function (evt) {
-                            console.log('progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :' + evt.config.file.name);
-                        }).success(function (content, status, headers, config) {
-                            // file is uploaded successfully
-                            console.log('file ' + config.file.name + 'is uploaded successfully. Response: ' + content);
-                            changeContent(content.id);
-                            $mdDialog.hide();
-                        });
-                    }
+                    }).progress(function (evt) {
+                        console.log('progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :' + evt.config.file.name);
+                    }).success(function (content, status, headers, config) {
+                        // file is uploaded successfully
+                        console.log('file ' + config.file.name + 'is uploaded successfully. Response: ' + content);
+                        changeContent(content.id);
+                        $mdDialog.hide();
+                    });
                 }
-            });
+            };
 
             function changeContent(fileId) {
                 $sails.post("/room/changeContent", {roomName: roomName, fileId: fileId});
             }
         }])
+        .controller('uploadMusicFormController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
+            var roomName = $routeParams.roomName,
+                userName = $cookies.userName;
 
+            $scope.uploadSong = function (title, file) {
+                if(title&&file){
+                    $scope.upload = $upload.upload({
+                        url: '/room/upload',
+                        method: 'POST',
+                        file: file,
+                        data: {userName: userName, roomName: roomName, title: title}
+
+                    }).progress(function (evt) {
+                        console.log('progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :' + evt.config.file.name);
+                    }).success(function (content, status, headers, config) {
+                        // file is uploaded successfully
+                        console.log('file ' + config.file.name + 'is uploaded successfully. Response: ' + content);
+                        changeContent(content.id);
+                        $mdDialog.hide();
+                    });
+                }
+            };
+
+            function changeContent(fileId) {
+                $sails.post("/room/changeContent", {roomName: roomName, fileId: fileId});
+            }
+        }])
         .controller('youtubeFormController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
             var roomName = $routeParams.roomName,
                 userName = $cookies.userName;
             $scope.youtubeLink="";
-            function changeContent(fileId) {
-                $sails.post("/room/changeContent", {roomName: roomName, fileId: fileId});
-            }
-            $scope.insertYoutubeLink=function(){
-                console.log($scope.youtubeLink);
+            $scope.insertYoutubeLink=function(title,link){
+                console.log(link);
                 $sails.post("/content",{
-                    title: $scope.youtubeLink,
-                    path: $scope.youtubeLink,
+                    title: title,
+                    path: link,
                     contentType:"ytb",
-                    uploadedBy:{
-                        name:userName
-                    }
-
+                    uploadedBy:userName
                 }).then(function(data){
                     changeContent(data.id);
-                })
-                $mdDialog.hide();
+                    $mdDialog.hide();
+                });
             };
-
-
+            function changeContent(contentId) {
+                $sails.post("/room/changeContent", {roomName: roomName, contentId: contentId});
+            }
         }])
 
         .controller('chatController', ['$scope', '$cookies', '$routeParams', '$sails', '$timeout', function ($scope, $cookies, $routeParams, $sails, $timeout) {

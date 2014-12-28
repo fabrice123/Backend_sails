@@ -12,7 +12,6 @@ var roomConstants = {
 module.exports = {
 
     join: function (req, res) {
-        //TODO:addUserToRoom
         var joinRequest = req.body,
             socket = req.socket;
 
@@ -25,8 +24,6 @@ module.exports = {
         //removeUserFromRoom(joinRequest.roomName, joinRequest.userName, socket);
         //sails.log.info(User);
         res.end();
-
-
     },
     leave: function (req, res) {
         //TODO:removeUserFromRoom
@@ -52,29 +49,34 @@ module.exports = {
     changeContent:function(req, res){
         var changeContentRequest = req.body,
             socket = req.socket;
-        changeContent(changeContentRequest.roomName,changeContentRequest.fileId);
-
-        socket.broadcast.to(changeContentRequest.roomName).emit(roomConstants.notifyContentChanged,
+        changeContentInDb(changeContentRequest.roomName,changeContentRequest.contentId);
+        sails.io.sockets.in(changeContentRequest.roomName).emit(roomConstants.notifyContentChanged,
             changeContentRequest
         );
     }
 };
+function createRoom(roomName,cback) {
+    Room.findOne(roomName).exec(function (err, room) {
+        if (!room) {
+            Room.create({
+                name: roomName
+            }).exec(function () {
+                if(cback){
+                    cback();
+                }
+            })
+
+        }
+
+    });
+}
 function addUserToRoom(roomName, userName, socket) {
     if (socket) {
         socket.join(roomName);
         socket.broadcast.to(roomName).emit(roomConstants.join,
             {roomName:roomName,userName:userName});
     }
-    Room.findOne(roomName).exec(function (err, room) {
-        if (!room) {
-            Room.create({
-                name: roomName
-            }).exec(function () {
-            })
-
-        }
-
-    });
+    createRoom(roomName);
     User.findOne(userName).exec(function (err, user) {
         if (user) {
             User.update(userName, {rooms: [roomName]}).exec(function () {
@@ -105,14 +107,19 @@ function removeUserFromRoom(roomName, userName, socket) {
     });
     sails.log.info("User "+userName +" has left room "+roomName);
 }
-function changeContent(roomName,fileId){
+function changeContentInDb(roomName,contentId){
+    sails.log.info("contentId: "+contentId);
     Room.findOne(roomName).exec(function (err, room) {
-        if (!room) {
-            Room.update({
-                currentContent: fileId
-            }).exec(function () {
+        sails.log.info("Room to update");
+        sails.log.info(room);
+        if (room) {
+            Room.update(roomName,
+                {
+                currentContent: contentId
+            }
+            ).exec(function (err,updatedRoom) {
+                sails.log.info(updatedRoom);
             })
-
         }
 
     });

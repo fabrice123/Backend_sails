@@ -5,7 +5,7 @@
 
 
     <div flex="60" style="height: 700px; margin-left: auto; margin-right: auto; background-color: #add8e6;">
-<youtube-video video-url="'https://www.youtube.com/watch?v=KDBxaq4Iv9o'" player-width="'100%'" player-height="'100%'"></youtube-video>
+        <youtube-video ng-if="content&&content.contentType=='ytb'" video-url="content.path" player-width="'100%'" player-height="'100%'"></youtube-video>
     </div>
 
 </div>

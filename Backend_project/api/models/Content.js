@@ -13,33 +13,28 @@ module.exports = {
           autoIncrement: true,
           primaryKey:true
       },
-
       title:{
           type:'string',
           required:true
       },
       path:{
-          type:'string',
-          unique:true
+          type:'string'
       },
       uploadedBy:{
           model:'user'
       },
       contentType:{
           type:'string',
-          enum:['image/png','image/jpeg','ytb']
-
+          enum:['image/png','image/jpeg','ytb','audio/mpeg']
       },
       loves:{
           type:'integer',
           defaultsTo:0
-
       },
       hates:{
           type:'integer',
           defaultsTo:0
       }
-
   }
 };
 

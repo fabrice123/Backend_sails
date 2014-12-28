@@ -10,22 +10,18 @@ module.exports = {
   attributes: {
 
      name:{
-     type:'string',
+        type:'string',
         primaryKey:'true',
         required:'true'
      },
       rooms:{
-       collection:'room',
-          via:'users'
-
+         collection:'room',
+         via:'users'
       },
       contents:{
           collection:'content',
           via:'uploadedBy'
-
       }
-
-
   }
 };
 
