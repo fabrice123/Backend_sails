@@ -61,7 +61,7 @@
                 }
                 return color;
 
-            };
+            }
             var messenger = $('#messenger');
             messenger.velocity({opacity: 0}, 0);
             messenger.velocity({scale: 0}, 0);
@@ -82,9 +82,11 @@
 
             //set the roomName cookie and get the userName cookie
             var roomConstants = {
-                    join: 'roomJoinEvent',
-                    leave: 'roomLeaveEvent',
-                    notifyContentChanged: 'notifyContentChanged'
+                join: 'roomJoinEvent',
+                leave: 'roomLeaveEvent',
+                notifyContentChanged:'notifyContentChanged',
+                like:'like',
+                dislike:'dislike'
                 },
                 userName = $cookies.userName,
                 roomName = $routeParams.roomName;
@@ -144,18 +146,30 @@
 
 
             $scope.tinderYes=function(){
-
-            }
+                if($scope.content){
+                    $sails.post('/room/like',{
+                        userName:userName,
+                        roomName:roomName,
+                        contentId:$scope.content.id
+                    });
+                }
+            };
             $scope.tinderNo=function(){
-
-            }
+                if($scope.content){
+                    $sails.post('/room/dislike',{
+                        userName:userName,
+                        roomName:roomName,
+                        contentId:$scope.content.id
+                    });
+                }
+            };
 
             function addUser(userName) {
                 var user = {name:userName};
                 user.first = user.name.substr(0, 1);
                 user.color=randomcolor();
                 $scope.users.push(user);
-            };
+            }
             function removeUser(userName) {
                 for(var i =0;i<$scope.users.length;i++){
                     var user = $scope.users[i];
@@ -163,7 +177,7 @@
                         $scope.users.splice(i,1);
                     }
                 }
-            };
+            }
             $sails.on(roomConstants.join, function (joinMessage) {
                 console.log(joinMessage);
                 addUser(joinMessage.userName);
@@ -176,6 +190,15 @@
                 console.log(notifyMessage);
                 getContent();
             });
+            $sails.on(roomConstants.like,function(likeUpdate){
+                var content = likeUpdate.content;
+                $scope.content.loves=content.loves;
+            });
+            $sails.on(roomConstants.dislike,function(dislikeUpdate){
+                var content = dislikeUpdate.content;
+                $scope.content.hates=content.hates;
+            });
+
             $scope.showContentPicker = function () {
                 $mdBottomSheet.show({
                     templateUrl: 'templates/content-picker.html',
