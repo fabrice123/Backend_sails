@@ -35,13 +35,8 @@
 
         <div ng-if="content" style="height: 100px;">
             <div style="margin: 30px 0 10px 385px;">
-<<<<<<< HEAD
-                <img id="tinderyes" ng-src="./images/TinderYes.png" title="HOT" ng-click="tinderYes()">
-                <img id="tinderno" ng-src="./images/TinderNo.png" title="NOT" ng-click="tinderNo()">
-=======
                 <img id="tinderyes" src="images/TinderYes.png" title="tinder yes" ng-click="tinderYes()">
                 <img id="tinderno" src="images/TinderNo.png" title="tinder no" ng-click="tinderNo()">
->>>>>>> d94871ca67196887e8c105d017de2cae11e5ef1c
             </div>
             <div ng-show="(content.loves+content.hates)>0">
                 <md-progress-linear id="lin2" md-mode="determinate" value="{{100*content.loves/(content.loves+content.hates)}}"></md-progress-linear>
