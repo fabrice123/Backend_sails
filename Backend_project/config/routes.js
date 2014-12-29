@@ -53,5 +53,7 @@ module.exports.routes = {
     'post /room/join': 'RoomController.join',
     'post /room/leave': 'RoomController.leave',
     'post /room/changeContent': 'RoomController.changeContent',
-    'post /room/upload': 'RoomController.upload'
+    'post /room/upload': 'RoomController.upload',
+    'post /room/like': 'RoomController.like',
+    'post /room/dislike': 'RoomController.dislike'
 };

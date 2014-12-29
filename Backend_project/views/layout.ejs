@@ -18,8 +18,8 @@
                 <span>{{title}}</span>
                 <span flex></span>
                 <!-- the rootController sets an actions array in the scope, store a function in the execute property, so it can be called on click here -->
-                <md-button ng-repeat="action in actions" ng-click="action.execute()"><i ng-if="action.icon"
-                                                                                                        class="{{action.icon}}"></i>
+                <md-button ng-repeat="action in actions" ng-click="action.execute()">
+                    <i ng-if="action.icon" class="{{action.icon}}"></i>
                 </md-button>
             </div>
         </md-toolbar>

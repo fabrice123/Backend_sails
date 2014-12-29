@@ -24,18 +24,28 @@
 
 
     <div flex="60" style="height: 700px; margin-left: auto; margin-right: auto; background-color: #add8e6;">
+        <h2 style="text-align: center" ng-show="content&&content.title">{{content.title}}</h2>
         <div style="height: 558px;">
             <youtube-video ng-if="content&&content.contentType=='ytb'" video-url="content.path" player-width="'100%'" player-height="'100%'"></youtube-video>
+            <img ng-if="content&&(content.contentType=='image/jpeg'||content.contentType=='image/png')" ng-src="{{content.path}}" style="max-width: 100%;margin:0 auto;"/>
+            <audio ng-if="content&&(content.contentType=='audio/mpeg'||content.contentType=='audio/mp3')" controls="controls">
+                <source ng-src="{{content.path}}" type="{{content.contentType}}">
+            </audio>
         </div>
 
-        <div style="height: 100px;">
+        <div ng-if="content" style="height: 100px;">
             <div style="margin: 30px 0 10px 385px;">
+<<<<<<< HEAD
                 <img id="tinderyes" ng-src="./images/TinderYes.png" title="HOT" ng-click="tinderYes()">
                 <img id="tinderno" ng-src="./images/TinderNo.png" title="NOT" ng-click="tinderNo()">
+=======
+                <img id="tinderyes" src="images/TinderYes.png" title="tinder yes" ng-click="tinderYes()">
+                <img id="tinderno" src="images/TinderNo.png" title="tinder no" ng-click="tinderNo()">
+>>>>>>> d94871ca67196887e8c105d017de2cae11e5ef1c
             </div>
-            <div>
-                <md-progress-linear  id="lin2" md-mode="determinate" ng-value="{{likes}}"></md-progress-linear>
-                <md-progress-linear  id="lin1" style=" padding-top: 10px;" md-mode="determinate" ng-value="{{dislikes}}"></md-progress-linear>
+            <div ng-show="(content.loves+content.hates)>0">
+                <md-progress-linear id="lin2" md-mode="determinate" value="{{100*content.loves/(content.loves+content.hates)}}"></md-progress-linear>
+                <md-progress-linear id="lin1" style=" padding-top: 10px;" md-mode="determinate" value="{{100*content.hates/(content.loves+content.hates)}}"></md-progress-linear>
             </div>
         </div>
     </div>
