@@ -19,7 +19,7 @@
             <audio ng-if="content&&(content.contentType=='audio/mpeg'||content.contentType=='audio/mp3')" controls="controls">
                 <source ng-src="{{content.path}}" type="{{content.contentType}}">
             </audio>
-
+            <h2 ng-hide="content" style="padding-top:30%;text-align: center;">Upload some content by pressing the button on the left/bottom</h2>
         </div>
          <div class="progress">
              <div class="progress-bar progress-bar-success" ng-style="{'width': 100*content.loves/(content.loves+content.hates)+'%'}">
