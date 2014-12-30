@@ -1,4 +1,4 @@
-# Media chat #
+# Media chat with authentication WIP #
 
 Media chat app is a simple node.js application build with [AngularJS](https://angularjs.org/), [Angular Material](https://material.angularjs.org/) and [Sails](http://sailsjs.org).
 

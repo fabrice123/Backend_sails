@@ -46,6 +46,8 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
     ,
+    '/login': 'AuthController.login',
+    '/logout':  'AuthController.logout',
     'post /chat/join': 'ChatController.join',
     'post /chat/send': 'ChatController.send',
     'post /chat/userIsTyping': 'ChatController.userIsTyping',

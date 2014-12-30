@@ -11,6 +11,14 @@
                 templateUrl: 'templates/login.html',
                 controller: 'loginController'
             })
+                .when('/register', {
+                    templateUrl: 'templates/register.html',
+                    controller: 'registerController'
+                })
+                .when('/room', {
+                    templateUrl: 'templates/roomForm.html',
+                    controller: 'roomFormController'
+                })
                 .when('/room/:roomName', {
                     templateUrl: 'templates/room.html',
                     controller: 'roomController'
@@ -25,42 +33,83 @@
             $scope.isLoggedIn = false;
             $scope.actions = [];
         }])
-        .controller('loginController', ['$scope', '$cookies', '$location', function ($scope, $cookies, $location) {
+        .controller('loginController', ['$scope', '$cookies', '$location','$sails', function ($scope, $cookies, $location,$sails) {
             //setting the length to 0, empties the array
             $scope.actions.length = 0;
             $scope.$parent.title = "Media Chat";
-            //check if cookie for roomName and userName exists, if so, route to roomController
-            if ($cookies.userName && $cookies.roomName) {
-                login($cookies.userName, $cookies.roomName);
-            }
-            $scope.userName = $cookies.userName;
-            $scope.roomName = $cookies.roomName;
+            //check if cookie for roomName and username exists, if so, route to roomController
 
-            //set the userName cookie when set and route to the roomController with route
+            $scope.username = $cookies.username;
+
+            //set the username cookie when set and route to the roomController with route
             ///logging in is not the intention over here, the logging in happens in the roomController and chatController
-            function login(userName, roomName) {
-                $cookies.userName = userName;
-                $location.path("/room/" + roomName);
+            function login(username, password) {
+                $cookies.username = username;
+                $sails.post('/login',{username:username,password:password}).success(function(resp){
+                    console.log(resp);
+                    $location.path("/room");
+                }).error(function(error){
+                    console.log('error');
+                });
             }
 
             $scope.login = login;
+        }])
+        .controller('registerController', ['$scope', '$cookies', '$location','$sails', function ($scope, $cookies, $location, $sails) {
+            //setting the length to 0, empties the array
+            $scope.actions.length = 0;
+            $scope.$parent.title = "Media Chat";
+            //check if cookie for roomName and username exists, if so, route to roomController
+            $scope.username = $cookies.username;
+
+            //set the username cookie when set and route to the roomController with route
+            ///logging in is not the intention over here, the logging in happens in the roomController and chatController
+            function register(username, password) {
+                var user = {username:username,password:password};
+                $sails.post('/user',user)
+                    .success(function(resp1){
+                        console.log(resp1);
+                        $sails.post('/login',user).success(function(resp2){
+                            console.log(resp2);
+                            $cookies.username = username;
+                            $location.path("/room");
+                        }).error(function(error){
+                            console.log('error');
+                        });
+                    })
+            }
+
+            $scope.register = register;
+        }])
+        .controller('roomFormController', ['$scope', '$cookies', '$location', function ($scope, $cookies, $location) {
+            //setting the length to 0, empties the array
+            $scope.actions.length = 0;
+
+            $scope.actions.push(
+                {
+                    icon: "mdi-account-circle mdi-2x",
+                    title: "Log "+$cookies.username+" out",
+                    execute: function () {
+                        $sails.get("/logout").success(function(message){
+                            console.log(message);
+                            $location.path("/");
+                        });
+                    }
+                }
+            );
+
+            $scope.$parent.title = "Media Chat";
+
+            $scope.room = $cookies.roomName;
+            $scope.joinRoom=function(roomName) {
+                $location.path("/room/"+roomName);
+            }
         }])
         .controller('roomController', ['$scope', '$cookies', '$cookieStore', '$routeParams', '$sails', '$location', '$mdDialog', '$mdBottomSheet', '$timeout', function ($scope, $cookies, $cookieStore, $routeParams, $sails, $location, $mdDialog, $mdBottomSheet, $timeout) {
             $scope.counter = 0;
             $scope.likes=0;
             $scope.dislikes=0;
 
-
-            function randomcolor() {
-
-                var letters = '0123456789ABCDEF'.split('');
-                var color = '#';
-                for (var i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
-
-            }
             var messenger = $('#messenger');
             messenger.velocity({opacity: 0}, 0);
             messenger.velocity({scale: 0}, 0);
@@ -79,7 +128,7 @@
                 }
             };
 
-            //set the roomName cookie and get the userName cookie
+            //set the roomName cookie and get the username cookie
             var roomConstants = {
                 join: 'roomJoinEvent',
                 leave: 'roomLeaveEvent',
@@ -87,11 +136,11 @@
                 like:'like',
                 dislike:'dislike'
                 },
-                userName = $cookies.userName,
+                username = $cookies.username,
                 roomName = $routeParams.roomName;
             $scope.roomName = roomName;
             $scope.$parent.title = "Media Chat: Room " + roomName;
-            $scope.userName = userName;
+            $scope.username = username;
             $scope.users = [];
 
             $cookies.roomName = roomName;
@@ -99,12 +148,26 @@
             $scope.actions.length = 0;
             $scope.actions.push(
                 {
-                    icon: "mdi-settings-power mdi-2x",
-                    title: "Log "+userName+" out",
+                    icon: "mdi-exit-to-app mdi-2x",
+                    title: "Change room",
                     execute: function () {
-                        $sails.post("/room/leave", {userName: userName, roomName: roomName});
+                        $sails.post("/room/leave", {username: username, roomName: roomName});
                         $cookieStore.remove('roomName');
-                        $location.path("/");
+                        $location.path("/room");
+                    }
+                }
+            );
+            $scope.actions.push(
+                {
+                    icon: "mdi-account-circle mdi-2x",
+                    title: "Log "+username+" out",
+                    execute: function () {
+                        $sails.post("/room/leave", {username: username, roomName: roomName});
+                        $sails.get("/logout").success(function(message){
+                            console.log(message);
+                            $location.path("/");
+                        });
+                        $cookieStore.remove('roomName');
                     }
                 }
             );
@@ -112,21 +175,15 @@
 
             //login to the roomController
             (function joinRoom() {
-                $sails.post("/room/join", {userName: userName, roomName: roomName});
+                $sails.post("/room/join", {username: username, roomName: roomName})
+                    .success(getUsers);
             })();
             function getUsers() {
                 return $sails.get("/room/" + roomName + "/users", function (users) {
-                    $timeout(function () {
-                        console.log(users);
-                        for (var i = 0; i < users.length; i++) {
-                            addUser(users[i].name);
-                        }
-                    }, 0);
-
+                    $scope.users=users;
                     console.log(users);
                 });
             }
-            getUsers();
             function getContent(){
                 $sails.get("/room/"+roomName+"/currentContent",function(content){
                     $scope.content=content;
@@ -147,7 +204,7 @@
             $scope.tinderYes=function(){
                 if($scope.content){
                     $sails.post('/room/like',{
-                        userName:userName,
+                        username:username,
                         roomName:roomName,
                         contentId:$scope.content.id
                     });
@@ -156,34 +213,32 @@
             $scope.tinderNo=function(){
                 if($scope.content){
                     $sails.post('/room/dislike',{
-                        userName:userName,
+                        username:username,
                         roomName:roomName,
                         contentId:$scope.content.id
                     });
                 }
             };
 
-            function addUser(userName) {
-                var user = {name:userName};
-                //user.first = user.name.substr(0, 1);
-                user.color=randomcolor();
+            function addUser(username) {
+                var user = {username:username};
                 $scope.users.push(user);
             }
-            function removeUser(userName) {
+            function removeUser(username) {
                 for(var i =0;i<$scope.users.length;i++){
                     var user = $scope.users[i];
-                    if(user.name==userName) {
+                    if(user.username==username) {
                         $scope.users.splice(i,1);
                     }
                 }
             }
             $sails.on(roomConstants.join, function (joinMessage) {
                 console.log(joinMessage);
-                addUser(joinMessage.userName);
+                addUser(joinMessage.username);
             });
             $sails.on(roomConstants.leave, function (leaveMessage) {
                 console.log(leaveMessage);
-                removeUser(leaveMessage.userName);
+                removeUser(leaveMessage.username);
             });
             $sails.on(roomConstants.notifyContentChanged, function (notifyMessage) {
                 console.log(notifyMessage);
@@ -248,7 +303,7 @@
         }])
         .controller('uploadPictureController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
             var roomName = $routeParams.roomName,
-                userName = $cookies.userName;
+                username = $cookies.username;
 
             $scope.uploadPicture = function (title, file) {
                 if(title&&file){
@@ -256,7 +311,7 @@
                         url: '/room/upload',
                         method: 'POST',
                         file: file,
-                        data: {userName: userName, roomName: roomName, title: title}
+                        data: {username: username, roomName: roomName, title: title}
 
                     }).progress(function (evt) {
                         console.log('progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :' + evt.config.file.name);
@@ -275,7 +330,7 @@
         }])
         .controller('uploadMusicFormController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
             var roomName = $routeParams.roomName,
-                userName = $cookies.userName;
+                username = $cookies.username;
 
             $scope.uploadSong = function (title, file) {
                 if(title&&file){
@@ -283,7 +338,7 @@
                         url: '/room/upload',
                         method: 'POST',
                         file: file,
-                        data: {userName: userName, roomName: roomName, title: title}
+                        data: {username: username, roomName: roomName, title: title}
 
                     }).progress(function (evt) {
                         console.log('progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :' + evt.config.file.name);
@@ -302,7 +357,7 @@
         }])
         .controller('youtubeFormController', ['$scope', '$routeParams', '$cookies', '$sails', '$upload', '$mdDialog', function ($scope, $routeParams, $cookies, $sails, $upload, $mdDialog) {
             var roomName = $routeParams.roomName,
-                userName = $cookies.userName;
+                username = $cookies.username;
             $scope.youtubeLink="";
             $scope.insertYoutubeLink=function(title,link){
                 console.log(link);
@@ -310,7 +365,7 @@
                     title: title,
                     path: link,
                     contentType:"ytb",
-                    uploadedBy:userName
+                    uploadedBy:username
                 }).then(function(data){
                     changeContent(data.id);
                     $mdDialog.hide();
@@ -322,27 +377,27 @@
         }])
 
         .controller('chatController', ['$scope', '$cookies', '$routeParams', '$sails', '$timeout', function ($scope, $cookies, $routeParams, $sails, $timeout) {
-            //get the userName and roomName cookies to login to the ChatController
+            //get the username and roomName cookies to login to the ChatController
             var chatConstants = {
                     join: 'chatJoinEvent',
                     send: 'chatSendEvent',
                     userIsTyping: 'chatUserIsTypingEvent',
                     leave: 'chatLeaveEvent'
                 },
-                userName = $cookies.userName,
+                username = $cookies.username,
                 roomName = $routeParams.roomName,
                 hasUserNotifiedTyping = false,
                 userIsTypingTime = 4000;
 
             $scope.messages = [];
             $scope.message = "";
-            $scope.userName = userName;
+            $scope.username = username;
             $scope.roomName = roomName;
             $scope.userIsTypingMessage = null;
 
 
             $scope.send = function (message) {
-                var messageRequest = {userName: userName, roomName: roomName, message: message};
+                var messageRequest = {username: username, roomName: roomName, message: message};
                 $sails.post("/chat/send", messageRequest);
                 $scope.messages.push(messageRequest);
                 $scope.message = "";
@@ -355,12 +410,12 @@
 
 
             (function joinRoom() {
-                $sails.post("/chat/join", {userName: userName, roomName: roomName});
+                $sails.post("/chat/join", {username: username, roomName: roomName});
             })();
 
             $scope.notifyUserIsTyping = function () {
                 if (!hasUserNotifiedTyping) {
-                    $sails.post("/chat/userIsTyping", {userName: userName, roomName: roomName});
+                    $sails.post("/chat/userIsTyping", {username: username, roomName: roomName});
                     hasUserNotifiedTyping = true;
                     setTimeout(
                         function () {
@@ -372,7 +427,7 @@
             };
             $sails.on(chatConstants.join, function (joinMessage) {
                 console.log(joinMessage);
-                joinMessage.message = joinMessage.userName + " has joined the room";
+                joinMessage.message = joinMessage.username + " has joined the room";
                 $scope.messages.push(joinMessage);
             });
             $sails.on(chatConstants.send, function (sendMessage) {
@@ -381,11 +436,11 @@
             });
             $sails.on(chatConstants.leave, function (leaveMessage) {
                 console.log(leaveMessage);
-                leaveMessage.message = leaveMessage.userName + " has left the room";
+                leaveMessage.message = leaveMessage.username + " has left the room";
                 $scope.messages.push(leaveMessage);
             });
             $sails.on(chatConstants.userIsTyping, function (typingMessage) {
-                $scope.userIsTypingMessage = typingMessage.userName + ' is typing';
+                $scope.userIsTypingMessage = typingMessage.username + ' is typing';
                 $timeout(function () {
                     $scope.userIsTypingMessage = "";
                 }, userIsTypingTime);

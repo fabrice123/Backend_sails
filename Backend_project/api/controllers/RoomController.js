@@ -17,21 +17,28 @@ module.exports = {
         var joinRequest = req.body,
             socket = req.socket;
 
-        addUserToRoom(joinRequest.roomName,joinRequest.userName,socket);
+        addUserToRoom(joinRequest.roomName,joinRequest.username,socket,
+            function(){
+                res.send("success");
+                res.end();
+            }
+        );
 
         socket.on('disconnect',function(){
-            removeUserFromRoom(joinRequest.roomName,joinRequest.userName,socket)
+            removeUserFromRoom(joinRequest.roomName,joinRequest.username,socket)
         });
 
-        //removeUserFromRoom(joinRequest.roomName, joinRequest.userName, socket);
+        //removeUserFromRoom(joinRequest.roomName, joinRequest.username, socket);
         //sails.log.info(User);
-        res.end();
     },
     leave: function (req, res) {
         //TODO:removeUserFromRoom
-        var joinRequest = req.body,
+        var leaveRequest = req.body,
             socket = req.socket;
-        removeUserFromRoom(joinRequest.roomName, joinRequest.userName, socket);
+        removeUserFromRoom(leaveRequest.roomName, leaveRequest.username, socket,function(){
+            res.send("success");
+            res.end();
+        });
         //2 verschillen!!!! Models is voor database en de functie die je aanmaakt zoals join dit kan je direct aanspreken
 
     },
@@ -46,7 +53,7 @@ module.exports = {
                     parts = file.fd.split('\\');
                 var path = parts[parts.length-1];
                 sails.log.info("path: "+path);
-                addContent(uploadRequest.title,"uploads/"+path,uploadRequest.userName,file.type,function(content){
+                addContent(uploadRequest.title,"uploads/"+path,uploadRequest.username,file.type,function(content){
                     sails.log.info(content);
                     return res.json(content);
                 });
@@ -93,52 +100,80 @@ function createRoom(roomName,cback) {
         if (!room) {
             Room.create({
                 name: roomName
-            }).exec(function () {
+            }).exec(function (createdRoom) {
                 if(cback){
-                    cback();
+                    cback(createdRoom);
                 }
             })
-
+        }else if(cback){
+            cback(room);
         }
-
     });
 }
-function addUserToRoom(roomName, userName, socket) {
-    if (socket) {
-        socket.join(roomName);
-        socket.broadcast.to(roomName).emit(roomConstants.join,
-            {roomName:roomName,userName:userName});
-    }
-    createRoom(roomName);
-    User.findOne(userName).exec(function (err, user) {
-        if (user) {
-            User.update(userName, {rooms: [roomName]}).exec(function () {
-            });
+function addUserToRoom(roomName, username, socket,cback) {
+    sails.log.info("User "+username +" is joining room "+roomName);
+    createRoom(roomName,function(room){
+        /*if(room){
+            if(room.users){
+                room.users=[];
+            }
+            room.users.push({username:username});
         }
-        else {
-            User.create({
-                name: userName,
-                rooms: [roomName]
-            }).exec(function () {
-            });
-        }
-    });
-    sails.log.info("User "+userName +" has joined room "+roomName);
-}
-function removeUserFromRoom(roomName, userName, socket) {
-    if (socket) {
-        socket.leave(roomName);
+        Room.update(roomName,room).exec(function(err,updatedRoom){
+            if (socket) {
+                socket.join(roomName);
+                socket.broadcast.to(roomName).emit(roomConstants.join,
+                    {roomName:roomName,username:username});
+            }
+            sails.log.info("User "+username +" has joined room "+roomName);
+        });*/
+        User.findOne({username:username}).exec(function (err, user) {
+            sails.log.info("User " + username + " is joining room " + roomName);
+            if (user) {
+                if (!user.rooms) {
+                    user.rooms = [];
+                }
+                user.rooms.push(room)
+                User.update({username: username}, user).exec(function (err,updatedUser) {
+                    if (socket) {
+                        socket.join(roomName);
+                        socket.broadcast.to(roomName).emit(roomConstants.join,
+                            {roomName: roomName, username: username});
+                    }
+                    sails.log.info("User " + username + " has joined room " + roomName);
+                    if(cback){
+                        cback(updatedUser);
+                    }
+                });
 
-        socket.broadcast.to(roomName).emit(roomConstants.leave,
-            {roomName: roomName, userName: userName});
-    }
-    User.findOne(userName).exec(function (err, user) {
-        if (user&&user.rooms.length <= 1) {
-            User.destroy(userName).exec(function () {
-            });
-        }
+            }
+        });
     });
-    sails.log.info("User "+userName +" has left room "+roomName);
+}
+function removeUserFromRoom(roomName, username, socket,cback) {
+    sails.log.info("User "+username +" is leaving room "+roomName);
+    Room.findOne(roomName).exec(function(err,room){
+       if(room&&room.users){
+           for(var i = 0 ; i < room.users.length;i++){
+               var user = room.users[i];
+               if(user.username==username){
+                   room.users.splice(i,1);
+               }
+           }
+           Room.update(roomName,room).exec(function(err2,room2){
+               if (socket) {
+                   socket.leave(roomName);
+
+                   socket.broadcast.to(roomName).emit(roomConstants.leave,
+                       {roomName: roomName, username: username});
+               }
+               if(cback){
+                   cback(room2);
+               }
+               sails.log.info("User "+username +" has left room "+roomName);
+           });
+       }
+    });
 }
 function changeContentInDb(roomName,contentId){
     sails.log.info("contentId: "+contentId);

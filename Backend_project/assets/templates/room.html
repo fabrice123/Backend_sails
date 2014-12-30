@@ -1,9 +1,9 @@
 <div layout>
     <div id="users">
         <md-button class="md-fab md-primary user" ng-repeat="u in users">
-            {{u.name|limitTo:1}}
+            {{u.username|limitTo:1}}
             <md-tooltip>
-                {{u.name}}
+                {{u.username}}
             </md-tooltip>
         </md-button>
     </div>
@@ -58,7 +58,7 @@
                 <ul style="padding:0px;">
                     <li style="list-style-type: none; width:100%;" ng-repeat="m in messages">
                         <md-card style="display: inline-block;background:#fff;">
-                            <div>{{m.userName}}: {{m.message}}</div>
+                            <div>{{m.username}}: {{m.message}}</div>
                         </md-card>
                         <div>{{date}}</div>
                     </li>

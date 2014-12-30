@@ -10,8 +10,8 @@ module.exports = {
   attributes: {
       name:{
           type:'string',
-          primaryKey:'true',
-          required:'true'
+          primaryKey:true,
+          required:true
       },
       users:{
           collection:'user',

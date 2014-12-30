@@ -34,11 +34,11 @@ module.exports.policies = {
   * and its actions                                                          *
   *                                                                          *
   ***************************************************************************/
-	// RabbitController: {
+	RoomController: {
 
 		// Apply the `false` policy as the default for all of RabbitController's actions
 		// (`false` prevents all access, which ensures that nothing bad happens to our rabbits)
-		// '*': false,
+		'*': 'authenticated'
 
 		// For the action `nurture`, apply the 'isRabbitMother' policy
 		// (this overrides `false` above)
@@ -47,5 +47,23 @@ module.exports.policies = {
 		// Apply the `isNiceToAnimals` AND `hasRabbitFood` policies
 		// before letting any users feed our rabbits
 		// feed : ['isNiceToAnimals', 'hasRabbitFood']
-	// }
+	},
+    ChatController: {
+
+        // Apply the `false` policy as the default for all of RabbitController's actions
+        // (`false` prevents all access, which ensures that nothing bad happens to our rabbits)
+        '*': 'authenticated'
+
+        // For the action `nurture`, apply the 'isRabbitMother' policy
+        // (this overrides `false` above)
+        // nurture	: 'isRabbitMother',
+
+        // Apply the `isNiceToAnimals` AND `hasRabbitFood` policies
+        // before letting any users feed our rabbits
+        // feed : ['isNiceToAnimals', 'hasRabbitFood']
+    },
+    UserController:{
+        '*':false,
+        create:true
+    }
 };
