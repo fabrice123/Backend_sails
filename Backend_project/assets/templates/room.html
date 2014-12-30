@@ -1,35 +1,19 @@
-<div layout="row">
-    <div style=" position: fixed; height: 560px; top: 150px; width: 70px;">
-
-        <md-content style="width: 90px; height: 560px">
-            <md-list>
-                <md-item ng-repeat="u in users">
-                    <md-item-content>
-                        <div class="md-tile-left">
-                            <div class="face" style="background-color:#ffffff;">
-                                <div id="firstletter">
-                                    {{u.first}}
-                                </div>
-                            </div>
-                        </div>
-                    </md-item-content>
-                    <md-tooltip md-visible="demo.showTooltip">
-                        {{u.name}}
-                    </md-tooltip>
-                </md-item>
-            </md-list>
-        </md-content>
-
+<div layout>
+    <div id="users">
+        <md-button class="md-fab md-primary user" ng-repeat="u in users">
+            {{u.name|limitTo:1}}
+            <md-tooltip>
+                {{u.name}}
+            </md-tooltip>
+        </md-button>
     </div>
 
 
-    <div flex="60" style="height: 700px; margin-left: auto; margin-right: auto;">
-     <md-whiteframe class="md-whiteframe-z1" style="margin-top:15px;" layout layout-align="center center">
-         <h2 style="text-align: center" ng-show="content&&content.title">{{content.title}}</h2>
-     </md-whiteframe>
-     <md-whiteframe class="md-whiteframe-z5" layout layout-align="center center">
 
-        <div style="height: 558px; padding-top:20px; width:100%;">
+     <md-whiteframe class="md-whiteframe-z1 content-card" >
+         <h1 style="text-align: center" ng-show="content&&content.title">{{content.title}}</h1>
+
+        <div style="height: 558px; width:100%;">
             <youtube-video ng-if="content&&content.contentType=='ytb'" video-url="content.path" player-width="'100%'" player-height="'100%'"></youtube-video>
             <img ng-if="content&&(content.contentType=='image/jpeg'||content.contentType=='image/png')" ng-src="{{content.path}}" style="max-width: 100%;margin:0 auto;"/>
             <audio ng-if="content&&(content.contentType=='audio/mpeg'||content.contentType=='audio/mp3')" controls="controls">
@@ -37,61 +21,57 @@
             </audio>
 
         </div>
+         <div class="progress">
+             <div class="progress-bar progress-bar-success" ng-style="{'width': 100*content.loves/(content.loves+content.hates)+'%'}">
+             </div>
+             <div class="progress-bar progress-bar-danger" ng-style="{'width':100*content.hates/(content.loves+content.hates)+'%'}">
+             </div>
+         </div>
+
+        <div ng-if="content">
+            <div style="text-align:center; margin:30px 0;">
+                <img id="tinderyes" src="images/TinderYes.png" title="HOT" ng-click="tinderYes()" style="margin-right:90px;">
+                <img id="tinderno" src="images/TinderNo.png" title="NOT" ng-click="tinderNo()">
+            </div>
+        </div>
     </md-whiteframe>
-     <md-whiteframe class="md-whiteframe-z2" layout layout-align="center center" style="margin-top:30px;">
 
 
-        <div ng-if="content" style="height: 100px;">
+    <md-button class="md-fab md-primary" aria-label="Login" ng-click="showContentPicker()"
+               style="position: fixed; left: 50px; bottom: 50px;">
+        <i class="mdi-note-add mdi-2x"></i>
+        <md-tooltip>
+            Add new content
+        </md-tooltip>
+    </md-button>
 
-            <div style="text-align:center; margin-top:10px;">
 
-                <img id="tinderyes" ng-src="./images/TinderYes.png" title="HOT" ng-click="tinderYes()" style="margin-right:90px;">
-                <img id="tinderno" ng-src="./images/TinderNo.png" title="NOT" ng-click="tinderNo()">
+    <md-button class="md-fab md-primary" aria-label="Login" ng-click="showMessenger()"
+               style="position: fixed; right: 50px; bottom: 50px;">
+        <i class="mdi-messenger mdi-2x"></i>
+    </md-button>
+    <div ng-controller="chatController as chatCtrl"
+         style=" position: absolute;  height: 500px; width:300px; right: 65px;  bottom:100px;">
 
+        <md-card style="bottom:0px;background-color:#f5f5f5;" id="messenger">
+            <div style=" height: 480px; overflow-y:scroll; width:300px;  right: 0;">
+                <ul style="padding:0px;">
+                    <li style="list-style-type: none; width:100%;" ng-repeat="m in messages">
+                        <md-card style="display: inline-block;background:#fff;">
+                            <div>{{m.userName}}: {{m.message}}</div>
+                        </md-card>
+                        <div>{{date}}</div>
+                    </li>
+                </ul>
+                <div style="position:absolute; bottom: 45px; font-size: 12px; margin-left: 5px; opacity: 0.9;">
+                    {{userIsTypingMessage}}
+                </div>
             </div>
-            <div ng-show="(content.loves+content.hates)>0">
-                <md-progress-linear id="lin2" md-mode="determinate" value="{{100*content.loves/(content.loves+content.hates)}}"></md-progress-linear>
-                <md-progress-linear id="lin1" style=" padding-top: 10px;" md-mode="determinate" value="{{100*content.hates/(content.loves+content.hates)}}"></md-progress-linear>
+            <div style="margin:4px; background-color: #f8f8ff;">
+                <input type="text" id="message" ng-model="message" ng-change="notifyUserIsTyping()"
+                       ng-keyup="enterEvent($event,message)" style="width:258px;"/>
+                <i class="mdi-send mdi-lg" ng-click="send(message)" style="width:30px;"></i>
             </div>
-        </div>
-
-
+        </md-card>
     </div>
-  </md-whiteframe>
-</div>
-
-
-<md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="showContentPicker()"
-           style="position: fixed; left: 50px; bottom: 50px;">
-    <i class="mdi-note-add mdi-2x"></i>
-</md-button>
-
-
-<md-button class="md-fab md-primary" md-theme="cyan" aria-label="Login" ng-click="showMessenger()"
-           style="position: fixed; right: 50px; bottom: 50px;">
-    <i class="mdi-messenger mdi-2x"></i>
-</md-button>
-<div ng-controller="chatController as chatCtrl"
-     style=" position: absolute;  height: 500px; width:300px; right: 65px;  bottom:100px;">
-
-    <md-card style="bottom:0px;background-color:#f5f5f5;" id="messenger">
-        <div style=" height: 480px; overflow-y:scroll; width:300px;  right: 0;">
-            <ul style="padding:0px;">
-                <li style="list-style-type: none; width:100%;" ng-repeat="m in messages">
-                    <md-card style="display: inline-block;background:#fff;">
-                        <div> {{m.message}}</div>
-                    </md-card>
-                    <div>{{date}}</div>
-                </li>
-            </ul>
-            <div style="position:absolute; bottom: 45px; font-size: 12px; margin-left: 5px; opacity: 0.9;">
-                {{userIsTypingMessage}}
-            </div>
-        </div>
-        <div style="margin:4px; background-color: #f8f8ff;">
-            <input type="text" id="message" ng-model="message" ng-change="notifyUserIsTyping()"
-                   ng-keyup="enterEvent($event,message)" style="width:258px;"/>
-            <i class="mdi-send mdi-lg" ng-click="send(message)" style="width:30px;"></i>
-        </div>
-    </md-card>
 </div>

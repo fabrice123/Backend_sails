@@ -22,14 +22,13 @@
             $sailsProvider.url = '/';
         }])
         .controller('rootController', ['$scope', function ($scope) {
-            $scope.title = "Media Chat";
             $scope.isLoggedIn = false;
             $scope.actions = [];
         }])
         .controller('loginController', ['$scope', '$cookies', '$location', function ($scope, $cookies, $location) {
             //setting the length to 0, empties the array
             $scope.actions.length = 0;
-
+            $scope.$parent.title = "Media Chat";
             //check if cookie for roomName and userName exists, if so, route to roomController
             if ($cookies.userName && $cookies.roomName) {
                 login($cookies.userName, $cookies.roomName);
@@ -101,7 +100,7 @@
             $scope.actions.push(
                 {
                     icon: "mdi-settings-power mdi-2x",
-                    title: userName,
+                    title: "Log "+userName+" out",
                     execute: function () {
                         $sails.post("/room/leave", {userName: userName, roomName: roomName});
                         $cookieStore.remove('roomName');
@@ -166,7 +165,7 @@
 
             function addUser(userName) {
                 var user = {name:userName};
-                user.first = user.name.substr(0, 1);
+                //user.first = user.name.substr(0, 1);
                 user.color=randomcolor();
                 $scope.users.push(user);
             }
