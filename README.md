@@ -61,9 +61,23 @@ Before running the application you must have successfully installed the followin
 
 Make sure all the command line tools are globally available in your command line.
 
+Now run the following command in the root of the project or run the "installnpm.bat" file.
+
+	npm install
+
 There are two batch-files included to start the app faster.
 
 * Run "rundb.bat" first to start the MongoDB database.
 * Run "runapp.bat" after that to start the Sails application.
 
+You can also manually start the app.   
+In one command line window start de MongoDB with the following command.
+
+	mongod --dbpath ".\data\db"
+	
+In another start Sails with the following command.
+
+	sails lift
+
 The app should now be running. By default it is running on port 1337.
+
