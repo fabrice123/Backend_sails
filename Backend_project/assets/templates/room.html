@@ -15,7 +15,7 @@
 
         <div style="height: 558px; width:100%;">
             <youtube-video ng-if="content&&content.contentType=='ytb'" video-url="content.path" player-width="'100%'" player-height="'100%'"></youtube-video>
-            <img ng-if="content&&(content.contentType=='image/jpeg'||content.contentType=='image/png')" ng-src="{{content.path}}" style="max-width: 100%;margin:0 auto;"/>
+            <img ng-if="content&&(content.contentType=='image/jpeg'||content.contentType=='image/png')" ng-src="{{content.path}}" style="max-width: 100%;max-height:100%;margin:0 auto;display:block;"/>
             <audio ng-if="content&&(content.contentType=='audio/mpeg'||content.contentType=='audio/mp3')" controls="controls">
                 <source ng-src="{{content.path}}" type="{{content.contentType}}">
             </audio>
