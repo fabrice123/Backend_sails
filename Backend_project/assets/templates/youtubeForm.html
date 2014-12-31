@@ -4,7 +4,7 @@
             <md-subheader class="md-sticky-no-effect">Paste youtube link here.</md-subheader>
             <md-text-float label="Title" ng-model="title" required></md-text-float>
             <md-text-float label="Paste youtube link here" ng-model="youtubeLink" required></md-text-float>
-            <md-button ng-click="youtubeForm.$valid&&insertYoutubeLink(title,youtubeLink)">ENTER</md-button>
+            <md-button class="md-primary fill-width" ng-click="youtubeForm.$valid&&insertYoutubeLink(title,youtubeLink)">ENTER</md-button>
         </form>
     </md-content>
 </md-dialog>

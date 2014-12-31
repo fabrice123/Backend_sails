@@ -7,6 +7,7 @@
     //looks like the most supported file upload https://github.com/danialfarid/angular-file-upload
     angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails', 'angularFileUpload', 'youtube-embed'])
         .config(['$routeProvider', '$sailsProvider', function ($routeProvider, $sailsProvider) {
+
             $routeProvider.when('/', {
                 templateUrl: 'templates/login.html',
                 controller: 'loginController'
@@ -33,7 +34,7 @@
             $scope.isLoggedIn = false;
             $scope.actions = [];
         }])
-        .controller('loginController', ['$scope', '$cookies', '$location','$sails', function ($scope, $cookies, $location,$sails) {
+        .controller('loginController', ['$scope', '$cookies', '$location','$sails','$mdToast', function ($scope, $cookies, $location,$sails,$mdToast) {
             //setting the length to 0, empties the array
             $scope.actions.length = 0;
             $scope.$parent.title = "Media Chat";
@@ -43,17 +44,28 @@
 
             //set the username cookie when set and route to the roomController with route
             ///logging in is not the intention over here, the logging in happens in the roomController and chatController
-            function login(username, password) {
+
+            $scope.login = function(username, password) {
                 $cookies.username = username;
                 $sails.post('/login',{username:username,password:password}).success(function(resp){
                     console.log(resp);
-                    $location.path("/room");
+                    if(resp.error){
+                        createToast(resp.reason);
+                    }else{
+                        $location.path("/room");
+                    }
                 }).error(function(error){
                     console.log('error');
+                    if(error.error&&error.reason){
+                        createToast(resp.reason);
+                    }
                 });
+            };
+            function createToast(message){
+                $mdToast.show(
+                    $mdToast.simple().content(message)
+                );
             }
-
-            $scope.login = login;
         }])
         .controller('registerController', ['$scope', '$cookies', '$location','$sails', function ($scope, $cookies, $location, $sails) {
             //setting the length to 0, empties the array
@@ -81,7 +93,7 @@
 
             $scope.register = register;
         }])
-        .controller('roomFormController', ['$scope', '$cookies', '$location', function ($scope, $cookies, $location) {
+        .controller('roomFormController', ['$scope', '$cookies', '$location','$sails', function ($scope, $cookies, $location,$sails) {
             //setting the length to 0, empties the array
             $scope.actions.length = 0;
 

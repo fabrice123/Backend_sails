@@ -8,11 +8,8 @@ module.exports = {
         passport.authenticate('local', function(err, user, info) {
             if ((err) || (!user)) {
                 sails.log.error(info);
-                res.status(400);
-                return res.send({
-                    message: 'login failed'
-                });
-                res.send(err);
+                return res.send(400, {error: "Login failed",reason:info.message});
+                //res.send(err);
             }
             req.login(user, function(err) {
                 if (err) res.send(err);

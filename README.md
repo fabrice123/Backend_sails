@@ -2,10 +2,12 @@
 
 Media chat app is a simple node.js application build with [AngularJS](https://angularjs.org/), [Angular Material](https://material.angularjs.org/) and [Sails](http://sailsjs.org).
 
-With the application you can log in to a room, upload a picture, youtube video or song to the room, rate the shared content and chat.   
+With the application you can register, log in, join a room, upload a picture, youtube video or song to the room, rate the shared content and chat.   
 This application was build as a school project for the course (experimental) "Backend Development" @ [NMCT](http://nmct.be).
 
 ## Overview ##
+
+### Register ###
 
 ### Login ###
 
