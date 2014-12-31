@@ -171,13 +171,18 @@ button.user{
         width: 80%;
     }
 }
-@media screen and (max-width:720px){
+@media screen and (max-width:900px){
     .content-card{
         width: 90%;
     }
 
 }
-@media screen and (max-height:960px){
+@media screen and (max-height:1080px){
+    .content-card > .inner-content{
+        height: 500px;
+    }
+}
+@media screen and (max-height:720px){
     .content-card > .inner-content{
         height: 360px;
     }
