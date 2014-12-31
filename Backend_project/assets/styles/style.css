@@ -125,6 +125,34 @@ button.user{
     cursor: default;
 }
 
+.upload-button{
+    overflow: visible!important;
+}
+
+.drop-box{
+    border: 1px dashed #888;
+    padding:50px;
+    margin: 5px auto;
+    -webkit-transition: background-color 0.5s ease;
+    -moz-transition: background-color 0.5s ease;
+    -ms-transition: background-color 0.5s ease;
+    -o-transition: background-color 0.5s ease;
+    transition: background-color 0.5s ease;
+}
+
+
+.dragover{
+    background-color: #d8ffa3;
+}
+.drop-box.ng-valid.ng-dirty{
+    background-color: #b1ff81;
+    border: 1px solid #79ff53;
+}
+
+.dragover-err{
+    background-color: #e59076;
+}
+
 .content-card{
     width: 960px;
     margin:45px auto 0;
@@ -142,14 +170,19 @@ button.user{
     .content-card{
         width: 80%;
     }
-    .content-card > .inner-content{
-        height: 420px;
-    }
 }
 @media screen and (max-width:720px){
     .content-card{
         width: 90%;
     }
+
+}
+@media screen and (max-height:960px){
+    .content-card > .inner-content{
+        height: 360px;
+    }
+}
+@media screen and (max-height: 540px){
     .content-card > .inner-content{
         height: 280px;
     }

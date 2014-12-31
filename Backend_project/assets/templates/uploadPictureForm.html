@@ -2,15 +2,14 @@
     <md-content>
         <md-subheader class="md-sticky-no-effect">Upload a Picture</md-subheader>
         <md-text-float label="Title" ng-model="title" required></md-text-float>
-        <md-button class="md-primary md-raised fill-width"
-                   ng-file-select
-                ng-model="files"
-                accept="image/*"
-                >Choose a picture</md-button>
+        <div class="upload-button" ng-file-select ng-model="files" accept="image/*">
+            <md-button class="md-primary md-raised fill-width" >
+                Choose a picture
+            </md-button>
+        </div>
         <div ng-file-drop ng-model="files" class="drop-box"
              drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}"
-             accept="image/*"
-                style="padding:100px;">
+             accept="image/*">
             Drop Image here
         </div>
         <md-button class="md-primary fill-width" ng-click="files.length>0&&uploadPicture(title,files[0])">Upload picture</md-button>

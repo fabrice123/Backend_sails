@@ -9,17 +9,28 @@ This application was build as a school project for the course (experimental) "Ba
 
 ### Register ###
 
+To register you have to give a username and password.   
+You will be logged in if the account is successfully created and go to the room picker.
+
+![Register](img/register.png "Register")
+
 ### Login ###
 
-To log in you have to pick a username and give in the room you want to join.   
-If there is no room with the name you provide, a new one will be created.
+To log in you have to fill in your credentials that you gave up when you registered.   
+You will go to the room picker if you log in successfully.
 
 ![Login](img/login.png "Login")
+
+### Room Picker ###
+
+Give in a rooms name that you want to join or create.
+
+![Pick room](img/room-picker.png "Pick room")
 
 ### Room ###
 
 In the title of the appbar and in the url, you can see in which room you are.   
-If you hover over the logout action on the right, you can see as who you will logout.  
+There are two actions on the right in the app bar. An action to leave the current room and an action to logout.
 
 The circles on the left side are the users that are in the room.   
 You can see the first letter of his or her name and when you hover over the circle, you can see the full name.
@@ -66,6 +77,9 @@ Make sure all the command line tools are globally available in your command line
 Now run the following command in the root of the project or run the "installnpm.bat" file.
 
 	npm install
+
+You may run into issues when trying to install the "bcrypt" package that.
+Try to install ["node-gyp"](https://github.com/TooTallNate/node-gyp)(check the install requirements!).
 
 There are two batch-files included to start the app faster.
 
