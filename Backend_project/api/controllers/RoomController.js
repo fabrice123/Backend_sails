@@ -17,7 +17,11 @@ module.exports = {
         var joinRequest = req.body,
             socket = req.socket;
 
-        addUserToRoom(joinRequest.roomName,joinRequest.userName,socket);
+        addUserToRoom(joinRequest.roomName,joinRequest.userName,socket,function(){
+            sails.log.info("success");
+            res.send("success");
+            res.end();
+        });
 
         socket.on('disconnect',function(){
             removeUserFromRoom(joinRequest.roomName,joinRequest.userName,socket)
@@ -25,13 +29,16 @@ module.exports = {
 
         //removeUserFromRoom(joinRequest.roomName, joinRequest.userName, socket);
         //sails.log.info(User);
-        res.end();
     },
     leave: function (req, res) {
         //TODO:removeUserFromRoom
         var joinRequest = req.body,
             socket = req.socket;
-        removeUserFromRoom(joinRequest.roomName, joinRequest.userName, socket);
+        removeUserFromRoom(joinRequest.roomName, joinRequest.userName, socket,function(){
+            sails.log.info("success");
+            res.send("success");
+            res.end();
+        });
         //2 verschillen!!!! Models is voor database en de functie die je aanmaakt zoals join dit kan je direct aanspreken
 
     },
@@ -93,52 +100,82 @@ function createRoom(roomName,cback) {
         if (!room) {
             Room.create({
                 name: roomName
-            }).exec(function () {
+            }).exec(function (createdRoom) {
                 if(cback){
-                    cback();
+                    cback(createdRoom);
                 }
             })
-
+        }else if(cback){
+            cback(room);
         }
-
     });
 }
-function addUserToRoom(roomName, userName, socket) {
-    if (socket) {
-        socket.join(roomName);
-        socket.broadcast.to(roomName).emit(roomConstants.join,
-            {roomName:roomName,userName:userName});
-    }
-    createRoom(roomName);
-    User.findOne(userName).exec(function (err, user) {
-        if (user) {
-            User.update(userName, {rooms: [roomName]}).exec(function () {
-            });
-        }
-        else {
-            User.create({
-                name: userName,
-                rooms: [roomName]
-            }).exec(function () {
-            });
-        }
-    });
-    sails.log.info("User "+userName +" has joined room "+roomName);
-}
-function removeUserFromRoom(roomName, userName, socket) {
-    if (socket) {
-        socket.leave(roomName);
+function addUserToRoom(roomName, userName, socket,cback) {
 
-        socket.broadcast.to(roomName).emit(roomConstants.leave,
-            {roomName: roomName, userName: userName});
-    }
-    User.findOne(userName).exec(function (err, user) {
-        if (user&&user.rooms.length <= 1) {
-            User.destroy(userName).exec(function () {
-            });
+    createRoom(roomName,function(room){
+        User.findOne(userName).populate('rooms').exec(function (err, user) {
+            sails.log.info("User " + userName + " is joining room " + roomName);
+            sails.log.debug(user);
+            if (user) {
+                user.rooms.add(roomName);
+                user.save(function (err2) {
+                    if (socket) {
+                        socket.join(roomName);
+                        socket.broadcast.to(roomName).emit(roomConstants.join,
+                            {roomName:roomName,userName:userName});
+                    }
+                    sails.log.info("User " + userName + " has joined room " + roomName);
+                    if(cback){
+                        cback(user);
+                    }
+                    if(err2)
+                        sails.log.error(err2);
+                });
+            }else{
+                User.create({
+                    name: userName,
+                    rooms: [roomName]
+                }).exec(function (err2,createdUser) {
+                    if (socket) {
+                        socket.join(roomName);
+                        socket.broadcast.to(roomName).emit(roomConstants.join,
+                            {roomName:roomName,userName:userName});
+                    }
+                    sails.log.info("User " + userName + " has joined room " + roomName);
+                    if(cback){
+                        cback(user);
+                    }
+                    if(err2)
+                        sails.log.error(err2);
+                });
+            }
+        });
+    });
+}
+function removeUserFromRoom(roomName, userName, socket,cback) {
+    sails.log.info("User "+userName +" is leaving room "+roomName);
+    User.findOne(userName).populate('rooms').exec(function(err,user){
+        sails.log.debug(user);
+        if(user){
+            user.rooms.remove(roomName);
+            user.save(function(err2){
+                if(!err2){
+                    if (socket) {
+                        socket.leave(roomName);
+
+                        socket.broadcast.to(roomName).emit(roomConstants.leave,
+                            {roomName: roomName, userName: userName});
+                    }
+                    if(cback){
+                        cback(user);
+                    }
+                    sails.log.info("User "+userName +" has left room "+roomName);
+                }else{
+                    sails.log.error(err2);
+                }
+            })
         }
     });
-    sails.log.info("User "+userName +" has left room "+roomName);
 }
 function changeContentInDb(roomName,contentId){
     sails.log.info("contentId: "+contentId);

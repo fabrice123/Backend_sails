@@ -13,10 +13,10 @@
      <md-whiteframe class="md-whiteframe-z1 content-card" >
          <h1 style="text-align: center" ng-show="content&&content.title">{{content.title}}</h1>
 
-        <div style="height: 558px; width:100%;">
+        <div class="fill-width inner-content">
             <youtube-video ng-if="content&&content.contentType=='ytb'" video-url="content.path" player-width="'100%'" player-height="'100%'"></youtube-video>
             <img ng-if="content&&(content.contentType=='image/jpeg'||content.contentType=='image/png')" ng-src="{{content.path}}" style="max-width: 100%;max-height:100%;margin:0 auto;display:block;"/>
-            <audio ng-if="content&&(content.contentType=='audio/mpeg'||content.contentType=='audio/mp3')" controls="controls">
+            <audio ng-if="content&&(content.contentType=='audio/mpeg'||content.contentType=='audio/mp3')" controls="controls" style="margin: 0 auto;padding-top: 30%;display: block;width: 100%;">
                 <source ng-src="{{content.path}}" type="{{content.contentType}}">
             </audio>
             <h2 ng-hide="content" style="padding-top:30%;text-align: center;">Upload some content by pressing the button on the left/bottom</h2>
