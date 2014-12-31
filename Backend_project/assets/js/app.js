@@ -57,7 +57,7 @@
                 }).error(function(error){
                     console.log('error');
                     if(error.error&&error.reason){
-                        createToast(resp.reason);
+                        createToast(error.reason);
                     }
                 });
             };
