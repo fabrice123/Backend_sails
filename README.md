@@ -78,7 +78,7 @@ Now run the following command in the root of the project or run the "installnpm.
 
 	npm install
 
-You may run into issues when trying to install the "bcrypt" package that.
+You may run into issues when trying to install the "bcrypt" package.
 Try to install ["node-gyp"](https://github.com/TooTallNate/node-gyp)(check the install requirements! I had to specify to node that I have a different version of Visual Studio).
 
 If you have visual studio 2012 or 2013 on your machine, you could also run into issues installing the packages. You can find some suggestions over [stackoverflow](http://stackoverflow.com/questions/14278417/cannot-install-node-modules-that-require-compilation-on-windows-7-x64-vs2012).
