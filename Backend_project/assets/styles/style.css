@@ -130,6 +130,10 @@ md-button.md-default-theme.md-raised.md-primary:not([disabled]):hover, md-button
     margin:45px auto 0;
 }
 
+.content-card > .inner-content{
+    height: 500px;
+}
+
 .content-card .md-button{
     background:#fff;
 }
@@ -138,9 +142,15 @@ md-button.md-default-theme.md-raised.md-primary:not([disabled]):hover, md-button
     .content-card{
         width: 80%;
     }
+    .content-card > .inner-content{
+        height: 420px;
+    }
 }
 @media screen and (max-width:720px){
     .content-card{
         width: 90%;
+    }
+    .content-card > .inner-content{
+        height: 280px;
     }
 }

@@ -19,6 +19,7 @@ module.exports = {
 
         addUserToRoom(joinRequest.roomName,joinRequest.username,socket,
             function(){
+                sails.log.info("success");
                 res.send("success");
                 res.end();
             }
@@ -113,28 +114,11 @@ function createRoom(roomName,cback) {
 function addUserToRoom(roomName, username, socket,cback) {
     sails.log.info("User "+username +" is joining room "+roomName);
     createRoom(roomName,function(room){
-        /*if(room){
-            if(room.users){
-                room.users=[];
-            }
-            room.users.push({username:username});
-        }
-        Room.update(roomName,room).exec(function(err,updatedRoom){
-            if (socket) {
-                socket.join(roomName);
-                socket.broadcast.to(roomName).emit(roomConstants.join,
-                    {roomName:roomName,username:username});
-            }
-            sails.log.info("User "+username +" has joined room "+roomName);
-        });*/
-        User.findOne({username:username}).exec(function (err, user) {
+        User.findOne({username:username}).populate('rooms').exec(function (err, user) {
             sails.log.info("User " + username + " is joining room " + roomName);
             if (user) {
-                if (!user.rooms) {
-                    user.rooms = [];
-                }
-                user.rooms.push(room)
-                User.update({username: username}, user).exec(function (err,updatedUser) {
+                user.rooms.add(roomName);
+                user.save(function (err2) {
                     if (socket) {
                         socket.join(roomName);
                         socket.broadcast.to(roomName).emit(roomConstants.join,
@@ -142,8 +126,10 @@ function addUserToRoom(roomName, username, socket,cback) {
                     }
                     sails.log.info("User " + username + " has joined room " + roomName);
                     if(cback){
-                        cback(updatedUser);
+                        cback(user);
                     }
+                    if(err2)
+                        sails.log.error(err2);
                 });
 
             }
@@ -152,26 +138,25 @@ function addUserToRoom(roomName, username, socket,cback) {
 }
 function removeUserFromRoom(roomName, username, socket,cback) {
     sails.log.info("User "+username +" is leaving room "+roomName);
-    Room.findOne(roomName).exec(function(err,room){
-       if(room&&room.users){
-           for(var i = 0 ; i < room.users.length;i++){
-               var user = room.users[i];
-               if(user.username==username){
-                   room.users.splice(i,1);
-               }
-           }
-           Room.update(roomName,room).exec(function(err2,room2){
-               if (socket) {
-                   socket.leave(roomName);
+    User.findOne({username:username}).populate('rooms').exec(function(err,user){
+       if(user){
+           user.rooms.remove(roomName);
+           user.save(function(err2){
+               if(!err2){
+                   if (socket) {
+                       socket.leave(roomName);
 
-                   socket.broadcast.to(roomName).emit(roomConstants.leave,
-                       {roomName: roomName, username: username});
+                       socket.broadcast.to(roomName).emit(roomConstants.leave,
+                           {roomName: roomName, username: username});
+                   }
+                   if(cback){
+                       cback(user);
+                   }
+                   sails.log.info("User "+username +" has left room "+roomName);
+               }else{
+                   sails.log.error(err2);
                }
-               if(cback){
-                   cback(room2);
-               }
-               sails.log.info("User "+username +" has left room "+roomName);
-           });
+           })
        }
     });
 }
