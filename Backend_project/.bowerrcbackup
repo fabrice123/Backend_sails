@@ -1,8 +1,0 @@
-/*
- * Create a file called .bowerrc and put the following in it.
- * This file should be in the root directory of the sails app.
- */
-
-{
-    "directory": "assets/linker/bower_components"
-}

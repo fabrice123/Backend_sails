@@ -1,0 +1,17 @@
+<div layout="row" layout-align="center center" style="margin-top: 10%;" class="fill-height">
+    <md-content>
+        <md-card>
+            <form name="loginForm" style="padding: 10px;" novalidate>
+                <h2>Log in:</h2>
+                <div class="column">
+                    <md-text-float label="Username" ng-model="username" required></md-text-float>
+                    <md-text-float type="password" label="Password" ng-model="password" required></md-text-float>
+                    <md-button class="md-primary fill-width"  aria-label="Login" ng-click="loginForm.$valid&&login(username,password)">
+                        Login
+                    </md-button>
+                </div>
+                <a class="md-primary fill-width md-button md-default-theme" href="#/register" style="text-align: center;font-size:10px;display: block;margin-top:6px;">Register user</a>
+            </form>
+        </md-card>
+    </md-content>
+</div>
