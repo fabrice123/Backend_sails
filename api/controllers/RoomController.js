@@ -190,6 +190,9 @@ function addContent(title,path,uploadedBy,contentType,cback){
         uploadedBy:uploadedBy,
         contentType:contentType
     }).exec(function(err,content){
+        if(err){
+            sails.log.error(err);
+        }
         if(cback)
         {
             cback(content);
