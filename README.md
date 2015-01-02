@@ -97,5 +97,5 @@ In another start Sails with the following command.
 
 	sails lift
 
-The app should now be running. By default it is running on port 1337.
+The app should now be running.
 
