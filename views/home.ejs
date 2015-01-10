@@ -7,7 +7,7 @@
                 <span>{{title}}</span>
                 <span flex></span>
                 <!-- the rootController sets an actions array in the scope, store a function in the execute property, so it can be called on click here -->
-                <md-button ng-repeat="action in actions" ng-click="action.execute()">
+                <md-button ng-repeat="action in actions" ng-click="action.execute()" class="nga-default nga-slide-right">
                     <i ng-if="action.icon" class="{{action.icon}}"></i>
                     <md-tooltip>
                         {{action.title}}
@@ -16,7 +16,7 @@
             </div>
         </md-toolbar>
     </md-whiteframe>
-    <div ng-view>
+    <div ng-view class="nga-default nga-fade fill-width" style="position: absolute;height: calc(100% - 64px);">
     </div>
     <script src="/js/dependencies/sails.io.js"></script>
     <script src="//cdn.jsdelivr.net/hammerjs/2.0.4/hammer.min.js"></script>

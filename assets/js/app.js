@@ -5,7 +5,7 @@
 (function (angular) {
     "use strict";
     //looks like the most supported file upload https://github.com/danialfarid/angular-file-upload
-    angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails', 'angularFileUpload', 'youtube-embed'])
+    angular.module('app', [ 'ngCookies', 'ngRoute', 'ngMaterial' , 'ngSails', 'angularFileUpload', 'youtube-embed','ngAnimate'])
         .config(['$routeProvider', '$sailsProvider', function ($routeProvider, $sailsProvider) {
 
             $routeProvider.when('/', {
@@ -197,8 +197,10 @@
                 });
             }
             function getContent(){
-                $sails.get("/room/"+roomName+"/currentContent",function(content){
-                    $scope.content=content;
+                $sails.get("/room/"+roomName+"/currentContent").success(function(content){
+                    if(content.contentType){
+                        $scope.content=content;
+                    }
                 });
             }
             getContent();

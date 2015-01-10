@@ -166,6 +166,23 @@ button.user{
     background:#fff;
 }
 
+.fadeIn {
+    -webkit-animation: myFadeIn .5s ease-in; /* Chrome, Safari, Opera */
+    animation: myFadeIn .5s ease-in;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes myFadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+/* Standard syntax */
+@keyframes myFadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
 @media screen and (max-width:1080px){
     .content-card{
         width: 80%;
